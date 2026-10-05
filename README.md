@@ -23,4 +23,4 @@ The repository includes `.github/workflows/pages.yml`. In GitHub:
 
 The site is configured for root serving (`base: "/"`), including local development. Set `SITE_URL` in CI when the final production domain is ready. If this remains a GitHub project page without a custom domain, change `base` to `/synth-website/` because GitHub will serve it below that path.
 
-The product CTA currently links to `https://app.synth.dev/login`; update `appUrl` in `src/pages/index.astro` if the SaaS deployment uses a different domain.
+The product CTA links to the deployed Synth workspace at `https://app.synth.absmach.eu/login`.

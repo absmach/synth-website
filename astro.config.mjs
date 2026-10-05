@@ -5,6 +5,7 @@ export default defineConfig({
   site: process.env.SITE_URL || "https://absmach.github.io/synth-website",
   base: "/",
   output: "static",
+  devToolbar: { enabled: false },
   build: {
     format: "directory",
   },

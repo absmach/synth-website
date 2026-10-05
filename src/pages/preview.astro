@@ -1,0 +1,33 @@
+---
+const previewBase = `${import.meta.env.BASE_URL}preview/`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Explore the new Synth design concept: describe a board and develop it through conversation. Interactive preview with a bundled example and simulated generation." />
+    <base href={previewBase} />
+    <title>Synth — Design concept</title>
+    <link rel="stylesheet" href={`${previewBase}styles.css`} />
+    <link rel="stylesheet" href={`${previewBase}workspace.css`} />
+    <link rel="stylesheet" href={`${previewBase}home.css`} />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to workspace</a>
+    <div id="app"></div>
+    <noscript><p style="padding: 2rem; font-family: sans-serif;">The interactive concept needs JavaScript. <a href="../#workspace">Explore the workspace screenshots on the Synth website.</a></p></noscript>
+    <dialog id="dialog"></dialog>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script is:inline src={`${previewBase}graphics.js`}></script>
+    <script is:inline src={`${previewBase}source-fixture.js`}></script>
+    <script is:inline src={`${previewBase}engineering-data.js`}></script>
+    <script is:inline src={`${previewBase}engineering.js`}></script>
+    <script is:inline src={`${previewBase}workspace.js`}></script>
+    <script is:inline src={`${previewBase}home.js`}></script>
+    <script is:inline src={`${previewBase}app.js`}></script>
+    <script is:inline src={`${previewBase}preview-bridge.js`}></script>
+  </body>
+</html>

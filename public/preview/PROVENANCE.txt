@@ -1,0 +1,46 @@
+Synth website interactive preview
+
+Source: synth-ee/docs/product/design-concept
+Source repository commit: 7a7ee77d1585f2ed0ae4b657c87ba84da98a6097
+Source commit date: 2026-10-06T01:11:50+02:00
+Source directory was clean when copied.
+
+This is the product design concept, packaged as a static website preview.
+Generation and replies are simulated; no model, compiler, supplier, account,
+or manufacturing service is connected. Drawings are illustrative. Existing
+simulation notices, export restrictions, and local-storage notices are retained.
+
+Website-specific modifications:
+- src/pages/preview.astro supplies the original HTML shell as a native Astro
+  route, adds noindex/nofollow, a base URL, a no-JavaScript fallback, and loads
+  preview-bridge.js after app.js. This serves /preview/ in development and builds.
+- home.js uses localStorage key synth-website-concept-projects-v1.
+- home.js and app.js redirect omitted PDF/gallery links to ../#workspace,
+  labeled "About this preview".
+- The home footer includes a "Back to Synth" link to ../.
+- preview-bridge.js transfers an optional ?idea= value, capped at 2,000
+  characters, to the home prompt without submitting it or starting generation.
+  It removes the idea query parameter from the URL and focuses the prompt.
+  Links without an idea query parameter preserve normal hash navigation.
+
+Included runtime:
+src/pages/preview.astro (HTML entry), app.js, home.js, workspace.js,
+engineering.js, engineering-data.js,
+graphics.js, source-fixture.js, styles.css, home.css, workspace.css,
+preview-bridge.js.
+
+Included assets:
+assets/synth-logo.svg
+assets/dm-sans.ttf
+assets/dm-sans-OFL.txt (DM Sans font license)
+assets/env_logger.synth
+assets/synth-source-LICENSE (Apache-2.0 license for bundled Synth source)
+
+No PDF, gallery, screenshot pack, validation report, or capture builder is
+included in this preview. Five source screenshots are copied unchanged into
+the website's public/images directory, outside the preview runtime:
+01-start.png -> concept-home.png
+03-board.png -> concept-board.png
+05-schematic.png -> concept-schematic.png
+06-perspective.png -> concept-3d.png
+09-source.png -> concept-source.png

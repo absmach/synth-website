@@ -807,6 +807,110 @@ h2 {
 .team-note > a > span {
   margin-left: 15px;
 }
+/* Pricing & plans */
+.pricing-section {
+  border-bottom: 1px solid var(--line);
+}
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.plan-card {
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.plan-card-primary {
+  background: #f0f5ff;
+  border-color: #bcd1fc;
+  box-shadow: 0 8px 30px #2563eb0a;
+}
+.plan-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.plan-name {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.plan-badge {
+  font: 8px var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--blue);
+  background: #dbeafe;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.plan-price-value {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.plan-price-period {
+  font-size: 13px;
+  color: var(--muted);
+}
+.plan-description {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-bottom: 24px;
+  min-height: 42px;
+}
+.plan-limits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+  color: #3b4758;
+}
+.plan-limits li {
+  position: relative;
+  padding-left: 18px;
+}
+.plan-limits li::before {
+  content: "•";
+  position: absolute;
+  left: 4px;
+  color: var(--blue);
+  font-weight: bold;
+}
+.plan-cta {
+  margin-top: auto;
+  width: 100%;
+}
+.pricing-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 24px;
+  text-align: center;
+}
+.pricing-note a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 /* Familiar, simple answers. */
 .faq-section {
   display: grid;
@@ -1206,6 +1310,16 @@ h2 {
     display: block;
     margin-left: 0;
     margin-top: 4px;
+  }
+  .plans-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .plan-card {
+    padding: 24px;
+  }
+  .plan-description {
+    min-height: auto;
   }
   .faq-section {
     padding-top: 0;

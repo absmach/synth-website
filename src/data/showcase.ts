@@ -13,7 +13,7 @@ export interface Board {
   parts: { ref: string; name: string; role: string }[];
   checks: { label: string; value: string }[];
   limits: string[];
-  source: { file: string; from: number; to: number; note: string };
+  source: { file: string };
   schematicAlt: string;
   routedAlt: string;
   assets: { glb: string; render: string; schematic: string; routed: string };
@@ -63,9 +63,9 @@ export const boards: Board[] = [
       { label: "Routing", value: "26 nets connected, 0 open" },
       { label: "KiCad design-rule check", value: "0 errors, 0 unconnected, 49 warnings (silkscreen and library notes). Report: reports/kicad-drc.json" },
       { label: "Copper", value: "263 track segments, 28 vias, 549 mm" },
-      { label: "Time to route", value: "117 s of routing on a laptop, debug build. From the route record." },
+      { label: "Time to route", value: "348 s on this run, on a laptop with a debug build. An earlier run of the same board took 117 s. From the route record." },
       { label: "Router", value: "FreeRouting 2.4.1. Record: reports/synth-route-record.json" },
-      { label: "Synth build", value: "synth 0.1.1, built locally from the board's branch (absmach/synth#103, commit 727dcc4) with the fixes from PRs #105, #108 and #109, which are all merged into Synth main now. The exact local build commit is not public, and a build of current main may give a slightly different board. KiCad 10 for the DRC and the 3D export." },
+      { label: "Synth build", value: "synth 0.1.1, built locally from absmach/synth main (commit 5f62566) plus the board's branch (absmach/synth#103, commit 722eb30). Ground pours are filled, as current main delivers them. KiCad 10.0.7 for the DRC and the 3D export." },
     ],
     limits: [
       `Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}.`,
@@ -74,7 +74,7 @@ export const boards: Board[] = [
       "KiCad's library has no 3D model for this USB-C connector, so the viewer shows no body for it.",
       "Silkscreen reference text is oversized and overlaps. That is a current limit of the Synth exporter.",
     ],
-    source: { file: "usb_uart.synth", from: 1, to: 30, note: "the intent, the layer count, the stackup and the power rails." },
+    source: { file: "usb_uart.synth" },
     schematicAlt:
       "Schematic of the board: USB-C input and protection, the CH342F bridge, the RS-485 transceiver, the regulator and the headers, each in its own colored group box",
     routedAlt:

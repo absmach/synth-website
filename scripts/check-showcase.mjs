@@ -92,6 +92,11 @@ for (const b of boards) {
     if (text(b.reviewedBy) && !page.includes(`Reviewed by ${b.reviewedBy}`)) fail(`${where}: page does not name the reviewer`);
     if (!page.includes("data-lightbox")) fail(`${where}: page has no image lightbox`);
     if (!page.includes('id="prompt-text"')) fail(`${where}: page does not show the runnable prompt`);
+    // The whole source is on the page, not an excerpt: its last statement must be there.
+    const source = read(join(dir, b.source.file)) ?? "";
+    const lastStatement = source.split("\n").map((l) => l.trim()).filter((l) => l.startsWith("connect ")).at(-1);
+    const decoded = page.replace(/&gt;|&#62;/g, ">").replace(/&lt;|&#60;/g, "<").replace(/&quot;|&#34;/g, '"').replace(/&amp;|&#38;/g, "&");
+    if (!lastStatement || !decoded.includes(lastStatement)) fail(`${where}: page does not show the whole ${b.source.file} (last statement missing)`);
     if (!new RegExp(`<a [^>]*href="[^"]*${b.slug}-files\\.zip"[^>]*\\bdownload\\b`).test(page)) fail(`${where}: no download link for the zip`);
     for (const para of (licenseNotes ?? "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean)) {
       if (!page.includes(para.slice(0, 40))) fail(`${where}: page does not show the license note: "${para.slice(0, 40)}..."`);

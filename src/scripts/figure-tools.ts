@@ -13,11 +13,13 @@ let x = 0;
 let y = 0;
 const MAX_SCALE = 12;
 
-// Keep the picture on screen: it can only be panned as far as the zoom reveals.
+// Keep the picture on screen: it can only be panned as far as its drawn size
+// (fitted inside the viewport, then zoomed) overflows the viewport.
 const apply = () => {
   if (!img) return;
-  const maxX = ((scale - 1) * img.clientWidth) / 2;
-  const maxY = ((scale - 1) * img.clientHeight) / 2;
+  const fit = Math.min(img.clientWidth / img.naturalWidth, img.clientHeight / img.naturalHeight) || 1;
+  const maxX = Math.max(0, (img.naturalWidth * fit * scale - img.clientWidth) / 2);
+  const maxY = Math.max(0, (img.naturalHeight * fit * scale - img.clientHeight) / 2);
   x = Math.max(-maxX, Math.min(maxX, x));
   y = Math.max(-maxY, Math.min(maxY, y));
   img.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;

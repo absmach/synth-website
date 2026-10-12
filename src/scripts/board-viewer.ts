@@ -76,8 +76,17 @@ function mount(root: HTMLElement) {
   let visible = false;
   let tween: { from: THREE.Vector3; to: THREE.Vector3; start: number } | null = null;
 
+  // Start close: the board should fill the viewer, without clipping on any shape of it.
+  // Height-limited (wide viewer): the bounding sphere takes 68% of the sphere-fit distance (the angled view may crop a near corner, like a close-up).
+  // Width-limited (phone): 95% of the sphere-fit distance across the horizontal field of view.
+  const startDistance = () => {
+    const vHalf = THREE.MathUtils.degToRad(camera.fov / 2);
+    const hHalf = Math.atan(Math.tan(vHalf) * camera.aspect);
+    return Math.max((radius / Math.sin(vHalf)) * 0.68, (radius / Math.sin(hHalf)) * 0.95);
+  };
+
   const viewPosition = (view: ViewName) => {
-    const d = radius * 3.3;
+    const d = startDistance();
     const offset =
       view === "top"
         ? new THREE.Vector3(0, d, 0.001)

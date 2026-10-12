@@ -3,6 +3,7 @@ export interface Board {
   title: string;
   tagline: string;
   status: string;
+  reviewedBy: string;
   summary: string;
   renderAlt: string;
   stats: { label: string; value: string }[];
@@ -19,12 +20,15 @@ export interface Board {
   files: { label: string; path: string; note: string }[];
 }
 
+const reviewedBy = "Steve Munene";
+
 export const boards: Board[] = [
   {
     slug: "usb-uart",
     title: "USB-C dual UART and RS-485 adapter",
     tagline: "One USB-C cable. Two serial ports.",
-    status: "Not fabricated. Not tested on hardware.",
+    status: `Not fabricated. Not tested on hardware. Reviewed by ${reviewedBy}.`,
+    reviewedBy,
     summary:
       "Port 1 is TTL serial for debugging microcontroller boards: console, flashing, logs. Port 2 is RS-485 for industrial gear such as Modbus sensors, meters and motor drives, and its direction is designed to switch by itself. Power comes from USB, and a jumper picks 3.3 V or 5 V I/O.",
     renderAlt:
@@ -63,7 +67,7 @@ export const boards: Board[] = [
       { label: "Router", value: "FreeRouting 2.4.1. Record: reports/synth-route-record.json" },
     ],
     limits: [
-      "Not fabricated and not tested on hardware. An engineer has to review it before anyone builds it.",
+      `Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}.`,
       "The U1 exposed pad holds one ground via inside the pad (0.6 mm pad, 0.3 mm drill). JLCPCB would have to fill and cap it, at extra cost on a 4-layer board. This is not confirmed with JLCPCB for this board.",
       "The USB data pair is not impedance-verified. The router does not couple the pair: D+ is 17.0 mm and D- is 18.4 mm, a 1.4 mm skew.",
       "KiCad's library has no 3D model for this USB-C connector, so the viewer shows no body for it.",

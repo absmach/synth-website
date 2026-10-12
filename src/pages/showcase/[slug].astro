@@ -99,7 +99,8 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
           <p>{board.prompt.note}</p>
           <details class="sc-details">
             <summary>Read the agent brief, round 2</summary>
-            <pre class="sc-code sc-brief" tabindex="0" aria-label="Agent brief text">{brief}</pre>
+            <div class="sc-codebar"><button type="button" class="sc-btn" data-copy data-copy-target="brief-text">Copy brief</button><a class="text-link" href={asset("brief.txt")} download>Download brief.txt</a></div>
+            <pre id="brief-text" class="sc-code sc-brief" tabindex="0" aria-label="Agent brief text">{brief}</pre>
           </details>
           <h3>Model and tools</h3>
           <dl class="sc-dl">
@@ -113,8 +114,8 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
         <div class="sc-side"><h2 id="source-title">The source</h2><p>The board is a plain-text file. Synth compiles it to a KiCad project.</p></div>
         <div class="sc-body">
           <p>First {board.source.to} lines of <code>{board.source.file}</code>: {board.source.note}</p>
+          <div class="sc-codebar"><button type="button" class="sc-btn" data-copy data-copy-url={asset(board.source.file)}>Copy full {board.source.file}</button><a class="text-link" href={asset(board.source.file)} download>Download {board.source.file}</a></div>
           <pre class="sc-code" tabindex="0" aria-label={`First lines of ${board.source.file}`}><code>{sourceLines}</code></pre>
-          <p><a class="text-link" href={asset(board.source.file)}>Open the full {board.source.file} <span aria-hidden="true">↗</span></a></p>
         </div>
       </section>
 
@@ -123,12 +124,12 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
         <div class="sc-body">
           <figure class="sc-figure sc-figure-wide">
             <img src={asset(board.assets.schematic)} alt={board.schematicAlt} loading="lazy" />
-            <figcaption>Schematic, drawn by Synth. It is a wide sheet: <a href={asset(board.assets.schematic)}>open it full size</a> to zoom into the text.</figcaption>
+            <figcaption>Schematic, drawn by Synth. It is a wide sheet, so zoom in to read the text. <span class="sc-tools"><a class="sc-link" href={asset(board.assets.schematic)} target="_blank" rel="noopener" data-zoom={asset(board.assets.schematic)} data-alt={board.schematicAlt}>Zoom</a><a class="sc-link" href={asset(board.assets.schematic)} download>Download SVG</a></span></figcaption>
           </figure>
           <div class="sc-pair">
             <figure class="sc-figure">
               <img src={asset(board.assets.routed)} alt={board.routedAlt} loading="lazy" />
-              <figcaption>Routed copper, top and bottom layers</figcaption>
+              <figcaption>Routed copper, top and bottom layers. <span class="sc-tools"><a class="sc-link" href={asset(board.assets.routed)} target="_blank" rel="noopener" data-zoom={asset(board.assets.routed)} data-alt={board.routedAlt}>Zoom</a><a class="sc-link" href={asset(board.assets.routed)} download>Download SVG</a></span></figcaption>
             </figure>
             <div>
               <h3>Parts</h3>
@@ -175,8 +176,21 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
 
     <footer class="site-footer"><div class="wrap footer-main"><div><a class="brand" href={base} aria-label="Synth home"><img src={`${base}images/synth-logo-monochrome.svg`} alt="Synth" width="114" height="27" /></a><p>A little idea. Something real.</p></div><div class="footer-links"><a href={appUrl}>Open Synth ↗</a><a href="https://github.com/absmach/synth">GitHub ↗</a><a href={docsUrl}>Documentation ↗</a></div></div><div class="wrap footer-bottom"><span>© {new Date().getFullYear()} Synth. Built openly by <a href="https://www.absmach.eu/">Abstract Machines</a>.</span></div></footer>
 
+    <dialog class="sc-lightbox" data-lightbox aria-label="Zoomed image">
+      <div class="sc-lb-bar">
+        <button type="button" class="sc-btn" data-lb="in" aria-label="Zoom in">+</button>
+        <button type="button" class="sc-btn" data-lb="out" aria-label="Zoom out">−</button>
+        <button type="button" class="sc-btn" data-lb="reset">Reset</button>
+        <a class="sc-btn" data-lb="download" href="#" download>Download</a>
+        <button type="button" class="sc-btn" data-lb="close">Close</button>
+      </div>
+      <div class="sc-lb-stage" data-lb-stage tabindex="0"></div>
+    </dialog>
+    <p class="sr-only" role="status" data-copy-status></p>
+
     <script>
       import "../../scripts/board-viewer";
+      import "../../scripts/figure-tools";
     </script>
   </body>
 </html>

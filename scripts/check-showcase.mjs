@@ -25,6 +25,7 @@ for (const b of boards) {
   for (const k of ["slug", "title", "tagline", "status", "summary", "model", "renderAlt", "schematicAlt", "routedAlt"]) {
     if (!text(b[k])) fail(`${where}: "${k}" is empty`);
   }
+  if (!text(b.reviewedBy)) fail(`${where}: "reviewedBy" is empty`);
   for (const k of ["stats", "tools", "checks", "limits", "files", "parts"]) {
     if (!list(b[k])) fail(`${where}: "${k}" is empty`);
   }
@@ -53,6 +54,13 @@ for (const b of boards) {
     if (!/data-spin[^>]*aria-pressed="true"/.test(page)) fail(`${where}: Auto-rotate is not on by default`);
     if (!/data-view="angled"[^>]*aria-pressed="true"/.test(page)) fail(`${where}: Angled view is not selected by default`);
     if (!page.includes(b.assets?.glb ?? "\0")) fail(`${where}: page does not reference the GLB`);
+    if (text(b.reviewedBy) && !page.includes(`Reviewed by ${b.reviewedBy}`)) fail(`${where}: page does not name the reviewer`);
+    if (!page.includes("data-lightbox")) fail(`${where}: page has no image lightbox`);
+    for (const f of [b.assets?.schematic, b.assets?.routed]) {
+      if (!new RegExp(`<a [^>]*(?=[^>]*\\bhref="[^"]*${f}")[^>]*\\bdata-zoom="[^"]*${f}"`).test(page)) fail(`${where}: Zoom for ${f} must be a link that works without JavaScript`);
+      if (!new RegExp(`<a [^>]*href="[^"]*${f}"[^>]*\\bdownload\\b`).test(page)) fail(`${where}: no Download link for ${f}`);
+    }
+    if ((page.match(/<button[^>]*\sdata-copy(?=[\s>=])/g) ?? []).length < 2) fail(`${where}: source and brief blocks need Copy buttons`);
   }
   if (home !== null && !home.includes(`href="/showcase/${b.slug}/"`)) {
     fail(`${where}: homepage has no card linking to /showcase/${b.slug}/`);

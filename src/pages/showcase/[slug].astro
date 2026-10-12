@@ -15,11 +15,11 @@ const docsUrl = "https://www.absmach.eu/docs/synth/user-guide/quick-start/";
 const canonicalUrl = Astro.site ? new URL(`${base}showcase/${board.slug}/`, Astro.site) : Astro.url;
 const dir = `${base}showcase/${board.slug}/`;
 const asset = (name: string) => `${dir}${name}`;
-const texts = import.meta.glob<string>("../../../public/showcase/*/*.{synth,txt}", { query: "?raw", import: "default", eager: true });
+const texts = import.meta.glob<string>("../../../public/showcase/*/*.{synth,txt,md}", { query: "?raw", import: "default", eager: true });
 const onDisk = (name: string) => texts[`../../../public/showcase/${board.slug}/${name}`] ?? "";
 
 const sourceLines = onDisk(board.source.file).split("\n").slice(board.source.from - 1, board.source.to).join("\n");
-const brief = onDisk("brief.txt");
+const promptText = onDisk("prompt.md");
 const lineage = [
   { id: "prompt", label: "Prompt" },
   { id: "source", label: "Source" },
@@ -98,10 +98,11 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
           <p class="sc-quote">{board.prompt.summary}</p>
           <p>{board.prompt.note}</p>
           <details class="sc-details">
-            <summary>Read the agent brief, round 2</summary>
-            <div class="sc-codebar"><button type="button" class="sc-btn" data-copy data-copy-target="brief-text">Copy brief</button><a class="text-link" href={asset("brief.txt")} download>Download brief.txt</a></div>
-            <pre id="brief-text" class="sc-code sc-brief" tabindex="0" aria-label="Agent brief text">{brief}</pre>
+            <summary>Read the prompt you can run</summary>
+            <div class="sc-codebar"><button type="button" class="sc-btn" data-copy data-copy-target="prompt-text">Copy prompt</button><a class="text-link" href={asset("prompt.md")} download>Download prompt.md</a></div>
+            <pre id="prompt-text" class="sc-code sc-brief" tabindex="0" aria-label="Prompt text">{promptText}</pre>
           </details>
+          <p><a class="text-link" href={asset("brief.txt")} download>Original agent brief, word for word <span aria-hidden="true">↓</span></a></p>
           <h3>Model and tools</h3>
           <dl class="sc-dl">
             <div><dt>AI model</dt><dd>{board.model}</dd></div>

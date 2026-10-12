@@ -43,6 +43,17 @@ for (const b of boards) {
     if (!materials.some((m) => m.alphaMode === "BLEND")) fail(`${where}: GLB has no solder mask (export with --include-soldermask)`);
   }
 
+  // The prompt must be runnable by someone else: no author-specific plumbing.
+  const prompt = read(join(dir, "prompt.md"));
+  if (prompt === null) {
+    fail(`${where}: public/showcase/${b.slug}/prompt.md is missing`);
+  } else {
+    const plumbing = /\b(commit|worktree|co-authored|pull request|firecrawl|toolsearch|sub-?agents?|token budget)\b|\bPR\b|\/home\/|\/tmp\/|\bgit\b/gi;
+    const found = [...new Set(prompt.match(plumbing) ?? [])];
+    if (found.length > 0) fail(`${where}: prompt.md has author-specific plumbing: ${found.join(", ")}`);
+    if (!/\bCH342F\b/.test(prompt) || !/\bTHVD1450\b/.test(prompt)) fail(`${where}: prompt.md does not name the key parts`);
+  }
+
   const page = read(join(root, "dist/showcase", b.slug, "index.html"));
   if (page === null) {
     fail(`${where}: dist/showcase/${b.slug}/index.html was not built`);
@@ -56,6 +67,7 @@ for (const b of boards) {
     if (!page.includes(b.assets?.glb ?? "\0")) fail(`${where}: page does not reference the GLB`);
     if (text(b.reviewedBy) && !page.includes(`Reviewed by ${b.reviewedBy}`)) fail(`${where}: page does not name the reviewer`);
     if (!page.includes("data-lightbox")) fail(`${where}: page has no image lightbox`);
+    if (!page.includes('id="prompt-text"')) fail(`${where}: page does not show the runnable prompt`);
     for (const f of [b.assets?.schematic, b.assets?.routed]) {
       if (!new RegExp(`<a [^>]*(?=[^>]*\\bhref="[^"]*${f}")[^>]*\\bdata-zoom="[^"]*${f}"`).test(page)) fail(`${where}: Zoom for ${f} must be a link that works without JavaScript`);
       if (!new RegExp(`<a [^>]*href="[^"]*${f}"[^>]*\\bdownload\\b`).test(page)) fail(`${where}: no Download link for ${f}`);

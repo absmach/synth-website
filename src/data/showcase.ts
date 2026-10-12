@@ -42,7 +42,7 @@ export const boards: Board[] = [
     prompt: {
       summary:
         "A real USB-C to dual-UART and RS-485 adapter, with ESD and surge protection, where every claim must be true and measured.",
-      note: "There is no single prompt. The board came from a long chat plus agent briefs. The second-round brief is published word for word below; only local file paths are replaced.",
+      note: "There is no single prompt: the board came from a long chat plus agent briefs. The prompt below is a cleaned, self-contained version of that brief, with our local setup removed, so you can run it yourself. It is not the exact text we ran, and a different run will not give an identical board. The original brief is linked below.",
     },
     model: "Claude Sonnet 5.5 (claude-sonnet-5-5), run in Claude Code",
     tools: [
@@ -94,7 +94,8 @@ export const boards: Board[] = [
       { label: "3D model", path: "usb-uart.glb", note: "Binary glTF, as shown in the viewer" },
       { label: "Route record", path: "reports/synth-route-record.json", note: "Synth's routing run: router, settings, nets, segments, vias. Local paths replaced." },
       { label: "Design-rule check", path: "reports/kicad-drc.json", note: "KiCad 10 DRC report for the routed board" },
-      { label: "Agent brief", path: "brief.txt", note: "Round 2, word for word" },
+      { label: "Prompt", path: "prompt.md", note: "A cleaned version you can run yourself" },
+      { label: "Original agent brief", path: "brief.txt", note: "Round 2, word for word, as we gave it" },
     ],
   },
 ];

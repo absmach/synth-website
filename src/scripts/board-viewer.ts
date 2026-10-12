@@ -14,11 +14,11 @@ function polishBoard(root: THREE.Object3D) {
     if (!mesh.isMesh) return;
     for (const m of [mesh.material].flat() as THREE.MeshStandardMaterial[]) {
       if (m.transparent) {
-        m.color.set(0x16402d);
+        m.color.set(0x235f42);
         m.opacity = 0.88;
         m.roughness = 0.4;
       } else if (m.metalness === 0) {
-        m.color.set(0x1d2a20);
+        m.color.set(0x25332a);
       }
     }
   });

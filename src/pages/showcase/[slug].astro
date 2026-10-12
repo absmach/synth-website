@@ -124,16 +124,21 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
       </section>
 
       <section id="board" class="sc-section wrap" aria-labelledby="board-sec-title">
-        <div class="sc-side"><h2 id="board-sec-title">The board</h2><p>Schematic, routed copper and parts, all from the same files.</p></div>
+        <div class="sc-side"><h2 id="board-sec-title">The board</h2><p>Schematic, all four copper layers and parts, from the same files.</p></div>
         <div class="sc-body">
           <figure class="sc-figure sc-figure-wide">
             <img src={asset(board.assets.schematic)} alt={board.schematicAlt} loading="lazy" />
             <figcaption>Schematic, drawn by Synth. It is a wide sheet, so zoom in to read the text. <span class="sc-tools"><a class="sc-link" href={asset(board.assets.schematic)} target="_blank" rel="noopener" data-zoom={asset(board.assets.schematic)} data-alt={board.schematicAlt}>Zoom</a><a class="sc-link" href={asset(board.assets.schematic)} download>Download SVG</a></span></figcaption>
           </figure>
           <div class="sc-pair">
-            <figure class="sc-figure">
-              <img src={asset(board.assets.routed)} alt={board.routedAlt} loading="lazy" />
-              <figcaption>Routed copper, top and bottom layers. <span class="sc-tools"><a class="sc-link" href={asset(board.assets.routed)} target="_blank" rel="noopener" data-zoom={asset(board.assets.routed)} data-alt={board.routedAlt}>Zoom</a><a class="sc-link" href={asset(board.assets.routed)} download>Download SVG</a></span></figcaption>
+            <figure class="sc-figure sc-layers" data-layers>
+              <div class="sc-tabs" role="tablist" aria-label="Copper layers">
+                {board.layers.map((layer, i) => <a role="tab" id={`layer-tab-${layer.id}`} class="sc-tab" href={asset(layer.file)} target="_blank" rel="noopener" aria-controls="layer-panel" data-layer={layer.id} data-file={asset(layer.file)} data-alt={layer.alt} data-note={layer.note} aria-selected={i === 0 ? "true" : "false"}>{layer.label}</a>)}
+              </div>
+              <div id="layer-panel" role="tabpanel" aria-labelledby={`layer-tab-${board.layers[0].id}`} data-layer-panel>
+              <img data-layer-img src={asset(board.layers[0].file)} alt={board.layers[0].alt} loading="lazy" />
+              <figcaption><span data-layer-note>{board.layers[0].note}</span> <span class="sc-tools"><a class="sc-link" data-layer-zoom href={asset(board.layers[0].file)} target="_blank" rel="noopener" data-zoom={asset(board.layers[0].file)} data-alt={board.layers[0].alt}>Zoom</a><a class="sc-link" data-layer-download href={asset(board.layers[0].file)} download>Download SVG</a></span></figcaption>
+              </div>
             </figure>
             <div>
               <h3>Parts</h3>
@@ -198,6 +203,7 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
     <script>
       import "../../scripts/board-viewer";
       import "../../scripts/figure-tools";
+      import "../../scripts/layer-tabs";
     </script>
   </body>
 </html>

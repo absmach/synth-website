@@ -15,8 +15,8 @@ export interface Board {
   limits: string[];
   source: { file: string };
   schematicAlt: string;
-  routedAlt: string;
-  assets: { glb: string; render: string; schematic: string; routed: string };
+  layers: { id: string; label: string; file: string; alt: string; note: string }[];
+  assets: { glb: string; render: string; schematic: string };
   files: { label: string; path: string; note: string }[];
 }
 
@@ -77,13 +77,40 @@ export const boards: Board[] = [
     source: { file: "usb_uart.synth" },
     schematicAlt:
       "Schematic of the board: USB-C input and protection, the CH342F bridge, the RS-485 transceiver, the regulator and the headers, each in its own colored group box",
-    routedAlt:
-      "Routed copper of the board: top and bottom layer traces, pads and the four pin headers inside the board outline",
+    layers: [
+      {
+        id: "top",
+        label: "Top",
+        file: "layer-top.svg",
+        alt: "Top copper layer with silkscreen: tracks and pads around the USB-C connector, the CH342F bridge and the RS-485 chip, over a ground pour",
+        note: "Top copper (F.Cu) with silkscreen. 225 track segments and a ground pour.",
+      },
+      {
+        id: "inner1",
+        label: "Inner 1",
+        file: "layer-inner1.svg",
+        alt: "Inner copper layer 1: a solid ground plane with clearance rings around the vias and header pins",
+        note: "Inner 1 (In1.Cu). A solid ground plane with no tracks; the rings are clearances around vias and pins.",
+      },
+      {
+        id: "inner2",
+        label: "Inner 2",
+        file: "layer-inner2.svg",
+        alt: "Inner copper layer 2: a solid ground plane with clearance rings around the vias and header pins",
+        note: "Inner 2 (In2.Cu). A second solid ground plane with no tracks.",
+      },
+      {
+        id: "bottom",
+        label: "Bottom",
+        file: "layer-bottom.svg",
+        alt: "Bottom copper layer seen from below: a few tracks and a ground pour, with the through-hole header pads",
+        note: "Bottom copper (B.Cu), seen from below, so it is mirrored. 38 track segments and a ground pour.",
+      },
+    ],
     assets: {
       glb: "usb-uart.glb",
       render: "render-3d.png",
       schematic: "schematic.svg",
-      routed: "routed-copper.svg",
     },
     files: [
       { label: "Design source", path: "usb_uart.synth", note: "The .synth file Synth compiles" },

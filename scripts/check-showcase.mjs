@@ -22,17 +22,21 @@ if (home === null) fail("dist/index.html missing: run `pnpm build` first");
 
 for (const b of boards) {
   const where = `board "${b.slug}"`;
-  for (const k of ["slug", "title", "tagline", "status", "summary", "model", "renderAlt", "schematicAlt", "routedAlt"]) {
+  for (const k of ["slug", "title", "tagline", "status", "summary", "model", "renderAlt", "schematicAlt"]) {
     if (!text(b[k])) fail(`${where}: "${k}" is empty`);
   }
   if (!text(b.reviewedBy)) fail(`${where}: "reviewedBy" is empty`);
+  if (!Array.isArray(b.layers) || b.layers.length !== 4) fail(`${where}: expected 4 copper layers (top, inner 1, inner 2, bottom)`);
+  for (const l of b.layers ?? []) {
+    for (const k of ["id", "label", "file", "alt", "note"]) if (!text(l[k])) fail(`${where}: layer "${l.id}" has an empty "${k}"`);
+  }
   for (const k of ["stats", "tools", "checks", "limits", "files", "parts"]) {
     if (!list(b[k])) fail(`${where}: "${k}" is empty`);
   }
   if (!text(b.prompt?.summary) || !text(b.prompt?.note)) fail(`${where}: prompt summary/note missing`);
 
   const dir = join(root, "public/showcase", b.slug);
-  const need = [b.assets?.glb, b.assets?.render, b.assets?.schematic, b.assets?.routed, ...(b.files ?? []).map((f) => f.path)];
+  const need = [b.assets?.glb, b.assets?.render, b.assets?.schematic, ...(b.layers ?? []).map((l) => l.file), ...(b.files ?? []).map((f) => f.path)];
   for (const f of need) {
     if (!text(f) || !existsSync(join(dir, f))) fail(`${where}: file missing under public/showcase/${b.slug}/: ${f}`);
   }
@@ -102,7 +106,14 @@ for (const b of boards) {
       if (!page.includes(para.slice(0, 40))) fail(`${where}: page does not show the license note: "${para.slice(0, 40)}..."`);
     }
     if (synthBuild && !page.includes("Synth build")) fail(`${where}: page does not show the Synth build`);
-    for (const f of [b.assets?.schematic, b.assets?.routed]) {
+    for (const l of b.layers ?? []) {
+      if (!new RegExp(`<a [^>]*href="[^"]*${l.file}"[^>]*\\bdata-layer="${l.id}"`).test(page)) fail(`${where}: no tab link for layer ${l.id} that works without JavaScript`);
+      if (!page.includes(l.alt.slice(0, 40))) fail(`${where}: layer ${l.id} alt text is not on the page`);
+    }
+    if (!/role="tablist"/.test(page)) fail(`${where}: layer tabs need role="tablist"`);
+    if (/<a [^>]*data-layer="[^"]*"[^>]*tabindex="-1"/.test(page) || /<a [^>]*tabindex="-1"[^>]*data-layer=/.test(page)) fail(`${where}: layer tabs must be keyboard-reachable without JavaScript (no tabindex="-1" in the HTML)`);
+    if (!/role="tabpanel"/.test(page) || !/aria-controls="layer-panel"/.test(page)) fail(`${where}: layer tabs need a tabpanel that the tabs control`);
+    for (const f of [b.assets?.schematic, b.layers?.[0]?.file]) {
       if (!new RegExp(`<a [^>]*(?=[^>]*\\bhref="[^"]*${f}")[^>]*\\bdata-zoom="[^"]*${f}"`).test(page)) fail(`${where}: Zoom for ${f} must be a link that works without JavaScript`);
       if (!new RegExp(`<a [^>]*href="[^"]*${f}"[^>]*\\bdownload\\b`).test(page)) fail(`${where}: no Download link for ${f}`);
     }

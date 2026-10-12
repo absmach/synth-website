@@ -16,6 +16,7 @@ export interface Board {
   schematicAlt: string;
   routedAlt: string;
   assets: { glb: string; render: string; schematic: string; routed: string };
+  standIn: { x: number; frontY: number; width: number; length: number; height: number; boardTop: number; note: string };
   files: { label: string; path: string; note: string }[];
 }
 
@@ -66,7 +67,7 @@ export const boards: Board[] = [
       "Not fabricated and not tested on hardware. An engineer has to review it before anyone builds it.",
       "The U1 exposed pad holds one ground via inside the pad (0.6 mm pad, 0.3 mm drill). JLCPCB would have to fill and cap it, at extra cost on a 4-layer board. This is not confirmed with JLCPCB for this board.",
       "The USB data pair is not impedance-verified. The router does not couple the pair: D+ is 17.0 mm and D- is 18.4 mm, a 1.4 mm skew.",
-      "KiCad's library has no 3D model for this USB-C connector, so the viewer shows no body for it.",
+      "The USB-C connector in the 3D view is an approximate shell, not the real part. KiCad has no 3D model for it.",
       "Silkscreen reference text is oversized and overlaps. That is a current limit of the Synth exporter.",
     ],
     source: { file: "usb_uart.synth", from: 1, to: 30, note: "the intent, the layer count, the stackup and the power rails." },
@@ -74,6 +75,15 @@ export const boards: Board[] = [
       "Schematic of the board: USB-C input and protection, the CH342F bridge, the RS-485 transceiver, the regulator and the headers, each in its own colored group box",
     routedAlt:
       "Routed copper of the board: top and bottom layer traces, pads and the four pin headers inside the board outline",
+    standIn: {
+      x: 22,
+      frontY: -0.06,
+      width: 8.94,
+      length: 7.3,
+      height: 3.26,
+      boardTop: 1.6,
+      note: "The USB-C connector body in the 3D view is an approximate shell, drawn by this page from the footprint outline (8.94 × 7.3 mm) and a typical receptacle height. KiCad has no 3D model for this part.",
+    },
     assets: {
       glb: "usb-uart.glb",
       render: "render-3d.png",

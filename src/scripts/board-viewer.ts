@@ -5,6 +5,25 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 
 type ViewName = "top" | "angled" | "bottom";
 
+// KiCad exports the solder mask as translucent green. Make it a glossy dark
+// green so the board reads clearly from every side. The only opaque non-metal
+// material is the board body, which gets a dark edge like KiCad's own render.
+function polishBoard(root: THREE.Object3D) {
+  root.traverse((o) => {
+    const mesh = o as THREE.Mesh;
+    if (!mesh.isMesh) return;
+    for (const m of [mesh.material].flat() as THREE.MeshStandardMaterial[]) {
+      if (m.transparent) {
+        m.color.set(0x16402d);
+        m.opacity = 0.88;
+        m.roughness = 0.4;
+      } else if (m.metalness === 0) {
+        m.color.set(0x1d2a20);
+      }
+    }
+  });
+}
+
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function mount(root: HTMLElement) {
@@ -42,6 +61,7 @@ function mount(root: HTMLElement) {
   const sun = new THREE.DirectionalLight(0xffffff, 1.1);
   sun.position.set(30, 60, 40);
   scene.add(sun);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8899aa, 0.5));
 
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 2000);
   const controls = new OrbitControls(camera, canvas);
@@ -124,6 +144,7 @@ function mount(root: HTMLElement) {
     new GLTFLoader().load(
       url,
       (gltf) => {
+        polishBoard(gltf.scene);
         scene.add(gltf.scene);
         const box = new THREE.Box3().setFromObject(gltf.scene);
         center = box.getCenter(new THREE.Vector3());

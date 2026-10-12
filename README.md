@@ -87,7 +87,8 @@ tools, the checks and limits, and links to the source and KiCad files.
 To add a board:
 
 1. Put its files in `public/showcase/<slug>/`: a GLB (`kicad-cli pcb export glb
-   --subst-models --include-tracks --include-pads --include-zones`), a 3D render
+   --subst-models --include-tracks --include-pads --include-zones
+   --include-soldermask`), a 3D render
    PNG, schematic and routed-copper SVGs, the `.synth` source, the KiCad project
    files and `brief.txt`.
 2. Add an entry to `src/data/showcase.ts`. Every number on the page must come

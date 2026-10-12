@@ -36,6 +36,12 @@ for (const b of boards) {
     if (!text(f) || !existsSync(join(dir, f))) fail(`${where}: file missing under public/showcase/${b.slug}/: ${f}`);
   }
 
+  const glb = existsSync(join(dir, b.assets?.glb ?? "\0")) ? readFileSync(join(dir, b.assets.glb)) : null;
+  if (glb !== null) {
+    const { materials = [] } = JSON.parse(glb.subarray(20, 20 + glb.readUInt32LE(12)).toString("utf8"));
+    if (!materials.some((m) => m.alphaMode === "BLEND")) fail(`${where}: GLB has no solder mask (export with --include-soldermask)`);
+  }
+
   const page = read(join(root, "dist/showcase", b.slug, "index.html"));
   if (page === null) {
     fail(`${where}: dist/showcase/${b.slug}/index.html was not built`);

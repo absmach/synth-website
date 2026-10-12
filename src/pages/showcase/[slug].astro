@@ -20,6 +20,8 @@ const onDisk = (name: string) => texts[`../../../public/showcase/${board.slug}/$
 
 const sourceLines = onDisk(board.source.file).split("\n").slice(board.source.from - 1, board.source.to).join("\n");
 const promptText = onDisk("prompt.md");
+const licenseParagraphs = onDisk("LICENSE-NOTES.md").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+const zipFile = `${board.slug}-files.zip`;
 const lineage = [
   { id: "prompt", label: "Prompt" },
   { id: "source", label: "Source" },
@@ -167,9 +169,12 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
       <section id="files" class="sc-section wrap" aria-labelledby="files-title">
         <div class="sc-side"><h2 id="files-title">Files</h2><p>Everything on this page, to open in your own tools.</p></div>
         <div class="sc-body">
+          <p class="sc-zip"><a class="button button-primary" href={asset(zipFile)} download>Download everything (.zip) <span aria-hidden="true">↓</span></a></p>
           <ul class="sc-files">
             {board.files.map((f) => <li><a href={asset(f.path)}><span>{f.label}</span><small>{f.note}</small><code>{f.path}</code></a></li>)}
           </ul>
+          <h3>License</h3>
+          {licenseParagraphs.map((para) => <p>{para}</p>)}
           <p><a class="text-link" href={`${base}#showcase`}>Back to the showcase <span aria-hidden="true">←</span></a></p>
         </div>
       </section>

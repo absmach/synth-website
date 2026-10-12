@@ -1,6 +1,6 @@
 // Checks the built site, not the source: run `pnpm build` first.
 // Usage: node scripts/check-showcase.mjs
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const root = new URL("..", import.meta.url).pathname;
@@ -54,6 +54,30 @@ for (const b of boards) {
     if (!/\bCH342F\b/.test(prompt) || !/\bTHVD1450\b/.test(prompt)) fail(`${where}: prompt.md does not name the key parts`);
   }
 
+  // The zip is built from everything in the board folder: it must contain all of it.
+  const zipName = `${b.slug}-files.zip`;
+  const zipPath = join(root, "dist/showcase", b.slug, zipName);
+  if (!existsSync(zipPath)) {
+    fail(`${where}: ${zipName} was not built (run pnpm build)`);
+  } else {
+    const zip = readFileSync(zipPath);
+    const eocd = zip.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+    const names = [];
+    for (let n = zip.readUInt16LE(eocd + 10), at = zip.readUInt32LE(eocd + 16); n > 0; n--) {
+      const len = zip.readUInt16LE(at + 28);
+      names.push(zip.subarray(at + 46, at + 46 + len).toString("utf8"));
+      at += 46 + len + zip.readUInt16LE(at + 30) + zip.readUInt16LE(at + 32);
+    }
+    const walk = (d, pre = "") => readdirSync(join(d), { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name), `${pre}${e.name}/`) : [`${pre}${e.name}`]));
+    const expected = [...walk(dir).filter((f) => f !== zipName), "LICENSE"].map((f) => `${b.slug}/${f}`);
+    const missing = expected.filter((f) => !names.includes(f));
+    if (missing.length > 0) fail(`${where}: ${zipName} is missing: ${missing.join(", ")}`);
+  }
+  const licenseNotes = read(join(dir, "LICENSE-NOTES.md"));
+  if (licenseNotes === null) fail(`${where}: LICENSE-NOTES.md is missing`);
+  const synthBuild = (b.checks ?? []).find((c) => c.label === "Synth build");
+  if (!synthBuild || !/\b[0-9a-f]{7,40}\b/.test(synthBuild.value)) fail(`${where}: checks need a "Synth build" entry with a commit hash`);
+
   const page = read(join(root, "dist/showcase", b.slug, "index.html"));
   if (page === null) {
     fail(`${where}: dist/showcase/${b.slug}/index.html was not built`);
@@ -68,6 +92,11 @@ for (const b of boards) {
     if (text(b.reviewedBy) && !page.includes(`Reviewed by ${b.reviewedBy}`)) fail(`${where}: page does not name the reviewer`);
     if (!page.includes("data-lightbox")) fail(`${where}: page has no image lightbox`);
     if (!page.includes('id="prompt-text"')) fail(`${where}: page does not show the runnable prompt`);
+    if (!new RegExp(`<a [^>]*href="[^"]*${b.slug}-files\\.zip"[^>]*\\bdownload\\b`).test(page)) fail(`${where}: no download link for the zip`);
+    for (const para of (licenseNotes ?? "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean)) {
+      if (!page.includes(para.slice(0, 40))) fail(`${where}: page does not show the license note: "${para.slice(0, 40)}..."`);
+    }
+    if (synthBuild && !page.includes("Synth build")) fail(`${where}: page does not show the Synth build`);
     for (const f of [b.assets?.schematic, b.assets?.routed]) {
       if (!new RegExp(`<a [^>]*(?=[^>]*\\bhref="[^"]*${f}")[^>]*\\bdata-zoom="[^"]*${f}"`).test(page)) fail(`${where}: Zoom for ${f} must be a link that works without JavaScript`);
       if (!new RegExp(`<a [^>]*href="[^"]*${f}"[^>]*\\bdownload\\b`).test(page)) fail(`${where}: no Download link for ${f}`);

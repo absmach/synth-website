@@ -341,6 +341,9 @@
   overflow-wrap: anywhere;
 }
 
+.sc-zip {
+  margin: 0 0 22px;
+}
 .sc-files {
   margin: 0 0 22px;
   padding: 0;

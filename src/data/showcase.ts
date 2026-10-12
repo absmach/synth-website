@@ -65,6 +65,7 @@ export const boards: Board[] = [
       { label: "Copper", value: "263 track segments, 28 vias, 549 mm" },
       { label: "Time to route", value: "117 s of routing on a laptop, debug build. From the route record." },
       { label: "Router", value: "FreeRouting 2.4.1. Record: reports/synth-route-record.json" },
+      { label: "Synth build", value: "synth 0.1.1, built locally from the board's branch (absmach/synth#103, commit 727dcc4) with the fixes from PRs #105, #108 and #109, which are all merged into Synth main now. The exact local build commit is not public, and a build of current main may give a slightly different board. KiCad 10 for the DRC and the 3D export." },
     ],
     limits: [
       `Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}.`,
@@ -86,6 +87,8 @@ export const boards: Board[] = [
     },
     files: [
       { label: "Design source", path: "usb_uart.synth", note: "The .synth file Synth compiles" },
+      { label: "Placement layout", path: "usb_uart.placement.layout.toml", note: "Where each part sits on the board, in board millimetres" },
+      { label: "Schematic layout", path: "usb_uart.schematic.layout.toml", note: "Where each part sits on the sheet, in sheet millimetres" },
       { label: "KiCad PCB", path: "kicad/usb_uart.kicad_pcb", note: "Routed board" },
       { label: "KiCad schematic", path: "kicad/usb_uart.kicad_sch", note: "Generated sheet" },
       { label: "KiCad symbols", path: "kicad/usb_uart.kicad_sym", note: "Generated symbol library" },

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/build-showcase-zip.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "check:showcase": "node scripts/check-showcase.mjs"

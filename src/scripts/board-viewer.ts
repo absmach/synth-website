@@ -2,41 +2,13 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 
 type ViewName = "top" | "angled" | "bottom";
-interface StandIn {
-  x: number;
-  frontY: number;
-  width: number;
-  length: number;
-  height: number;
-  boardTop: number;
-}
-
-// PCB millimetres to glTF metres: x is x, board y is z, up is y.
-function connectorShell(c: StandIn) {
-  const mm = 0.001;
-  const group = new THREE.Group();
-  const shell = new THREE.Mesh(
-    new RoundedBoxGeometry(c.width * mm, c.height * mm, c.length * mm, 3, 0.9 * mm),
-    new THREE.MeshStandardMaterial({ color: 0xbcc3cc, metalness: 0.85, roughness: 0.38 }),
-  );
-  const slot = new THREE.Mesh(
-    new THREE.BoxGeometry(c.width * 0.8 * mm, c.height * 0.5 * mm, 0.4 * mm),
-    new THREE.MeshStandardMaterial({ color: 0x14171c, roughness: 0.8 }),
-  );
-  slot.position.z = (-c.length / 2) * mm;
-  group.add(shell, slot);
-  group.position.set(c.x * mm, (c.boardTop + c.height / 2) * mm, (c.frontY + c.length / 2) * mm);
-  return group;
-}
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function mount(root: HTMLElement) {
   const url = root.dataset.glb;
-  const standIn: StandIn | null = root.dataset.standIn ? JSON.parse(root.dataset.standIn) : null;
   const stage = root.querySelector<HTMLElement>("[data-viewer-stage]");
   const status = root.querySelector<HTMLElement>("[data-viewer-status]");
   const fallback = root.querySelector<HTMLElement>("[data-viewer-fallback]");
@@ -153,7 +125,6 @@ function mount(root: HTMLElement) {
       url,
       (gltf) => {
         scene.add(gltf.scene);
-        if (standIn) scene.add(connectorShell(standIn));
         const box = new THREE.Box3().setFromObject(gltf.scene);
         center = box.getCenter(new THREE.Vector3());
         radius = box.getSize(new THREE.Vector3()).length() / 2;

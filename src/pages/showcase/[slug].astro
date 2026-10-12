@@ -71,7 +71,7 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
         <p class="sc-status-note">{board.status}</p>
       </section>
 
-      <section class="sc-viewer wrap" aria-label="Interactive 3D view" data-board-viewer data-glb={asset(board.assets.glb)} data-stand-in={JSON.stringify(board.standIn)} data-label={`3D view of ${board.title}. ${board.renderAlt}`}>
+      <section class="sc-viewer wrap" aria-label="Interactive 3D view" data-board-viewer data-glb={asset(board.assets.glb)} data-label={`3D view of ${board.title}. ${board.renderAlt}`}>
         <div class="sc-stage" data-viewer-stage>
           <img data-viewer-fallback src={asset(board.assets.render)} alt={board.renderAlt} width="1600" height="1100" fetchpriority="high" />
           <div class="sc-controls" role="group" aria-label="3D view controls" hidden>
@@ -82,7 +82,6 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
           </div>
         </div>
         <p class="sc-status" data-viewer-status role="status"></p>
-        <p class="sc-status">{board.standIn.note}</p>
       </section>
 
       <nav class="sc-lineage wrap" aria-label="From prompt to files">

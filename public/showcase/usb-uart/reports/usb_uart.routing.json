@@ -1,6 +1,6 @@
 {
   "schema_version": "synth.routing.v1",
-  "state": "routed",
+  "state": "validation_failed",
   "engine": "freerouting",
   "capability": {
     "engine": "freerouting",
@@ -41,22 +41,22 @@
       "threads": "4",
       "wall_clock_secs": "1200"
     },
-    "input_hash": "8c451141dc17da49e0e72b1e289ed453171f84c3235959485a5adc2a2715b3d9",
+    "input_hash": "9cc04ace87dc40fb010e9f57466711f4052ee3debf0543857c51b8d812db5a9f",
     "output_hash": "",
     "source_revision": null,
-    "duration_ms": 348488
+    "duration_ms": 273476
   },
   "statistics": {
-    "connected_nets": 26,
+    "connected_nets": 29,
     "open_nets": 0,
     "open_net_names": [],
-    "segments": 263,
-    "vias": 28,
-    "wire_length_mm": 549.292316,
+    "segments": 265,
+    "vias": 27,
+    "wire_length_mm": 550.892385,
     "pad_escape_rejections": 0,
     "engine_findings": {
-      "claimed_imported_segments": "263",
-      "claimed_imported_vias": "28"
+      "claimed_imported_segments": "265",
+      "claimed_imported_vias": "27"
     }
   },
   "artifacts": {
@@ -70,7 +70,7 @@
     "drc_report": null
   },
   "validation": {
-    "fabrication_ready": true,
+    "fabrication_ready": false,
     "topology": {
       "missing_footprints": [],
       "extra_footprints": [],
@@ -81,23 +81,24 @@
       "outline_present": true
     },
     "connectivity": {
-      "connected_nets": 26,
+      "connected_nets": 29,
       "open_nets": 0,
       "open": [],
       "unconnected_pads": [],
       "via_in_pad": [
-        "via at (23.800, 17.000) mm U1.25",
-        "via at (36.375, 20.005) mm U3.5"
+        "via at (23.800, 17.300) mm U1.25"
       ],
       "undersized_vias": [],
       "undersized_tracks": []
     },
     "kicad_drc": {
       "errors": 0,
-      "unconnected": 0,
-      "warnings": 49
+      "unconnected": 2,
+      "warnings": 51
     },
-    "blocking_reasons": [],
+    "blocking_reasons": [
+      "kicad-cli pcb drc reported 2 blocking violation(s)"
+    ],
     "unavailable_checks": []
   },
   "failure": null,

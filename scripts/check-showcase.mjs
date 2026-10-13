@@ -1,6 +1,7 @@
 // Checks the built site, not the source: run `pnpm build` first.
 // Usage: node scripts/check-showcase.mjs
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 
 const root = new URL("..", import.meta.url).pathname;
@@ -82,6 +83,47 @@ for (const b of boards) {
   const synthBuild = (b.checks ?? []).find((c) => c.label === "Synth build");
   if (!synthBuild || !/\b[0-9a-f]{7,40}\b/.test(synthBuild.value)) fail(`${where}: checks need a "Synth build" entry with a commit hash`);
 
+  // A page that says "not fabricated" must not ship a record that says fabrication-ready.
+  const record = read(join(dir, "reports/usb_uart.routing.json"));
+  if (record !== null && /not fabricated/i.test(b.status) && JSON.parse(record).validation?.fabrication_ready !== false) {
+    fail(`${where}: reports/usb_uart.routing.json does not say fabrication_ready is false, but the page says the board is not fabricated`);
+  }
+  // The tool commit the reports came from is the one QUALIFICATION.md names, and every report it cites is published.
+  const qual = read(join(dir, "QUALIFICATION.md")) ?? "";
+  const qualTool = qual.match(/Synth `main` ([0-9a-f]{7})\b/)?.[1];
+  if (!qualTool || qualTool !== b.reportBuildRevision) fail(`${where}: reportBuildRevision ${b.reportBuildRevision} is not the Synth main commit QUALIFICATION.md names (${qualTool})`);
+  for (const cited of new Set(qual.match(/reports\/[\w.-]+\.json/g) ?? [])) {
+    if (!existsSync(join(dir, cited))) fail(`${where}: QUALIFICATION.md cites ${cited}, which is not published`);
+  }
+  // The qualification state is stated, with the evidence a reviewer needs.
+  if (!/engineering draft/i.test(b.qualification?.text ?? "") || !/not a completed class-b qualification/i.test(b.qualification?.text ?? "")) {
+    fail(`${where}: qualification.text must call the board an engineering draft, not a completed Class-B qualification`);
+  }
+  for (const e of b.qualification?.evidence ?? []) {
+    if (!existsSync(join(dir, e.path))) fail(`${where}: qualification evidence missing: ${e.path}`);
+  }
+  if (!(b.qualification?.evidence ?? []).some((e) => e.path === "QUALIFICATION.md")) fail(`${where}: qualification evidence must include QUALIFICATION.md`);
+  // SHA256SUMS lists every published file except the zip and itself, and each hash is right.
+  const sums = read(join(dir, "SHA256SUMS"));
+  if (sums === null) {
+    fail(`${where}: SHA256SUMS is missing`);
+  } else {
+    const listed = new Map(sums.split("\n").filter(Boolean).map((l) => [l.slice(66), l.slice(0, 64)]));
+    const files = (d, pre = "") => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? files(join(d, e.name), `${pre}${e.name}/`) : [`${pre}${e.name}`]));
+    for (const f of files(dir).filter((f) => f !== "SHA256SUMS" && f !== `${b.slug}-files.zip`)) {
+      if (!listed.has(f)) fail(`${where}: SHA256SUMS does not list ${f}`);
+      else if (listed.get(f) !== createHash("sha256").update(readFileSync(join(dir, f))).digest("hex")) fail(`${where}: SHA256SUMS has the wrong hash for ${f}`);
+    }
+  }
+  // Protection wording must not imply tested surge protection.
+  for (const [k, v] of [["summary", b.summary], ["prompt.summary", b.prompt?.summary ?? ""]]) {
+    if (/surge/i.test(v) && !/not surge-tested/i.test(v)) fail(`${where}: ${k} mentions surge protection without saying it is not surge-tested`);
+  }
+  // One revision per artifact set: the commits named in the checks are the board's revision and the Synth main it was built on.
+  const shas = new Set((b.checks ?? []).flatMap((c) => c.value.match(/\b[0-9a-f]{7,40}\b/g) ?? []).filter((s) => /[a-f]/.test(s) && /\d/.test(s)));
+  for (const s of shas) if (![b.revision, b.mainRevision, b.reportBuildRevision].includes(s)) fail(`${where}: checks name commit ${s}, which is not one of revision ${b.revision}, mainRevision ${b.mainRevision}, reportBuildRevision ${b.reportBuildRevision}`);
+  if (!text(b.revision) || !(b.checks ?? []).some((c) => c.value.includes(b.revision ?? "\0"))) fail(`${where}: checks must name the board's revision`);
+
   const page = read(join(root, "dist/showcase", b.slug, "index.html"));
   if (page === null) {
     fail(`${where}: dist/showcase/${b.slug}/index.html was not built`);
@@ -94,6 +136,7 @@ for (const b of boards) {
     if (!/data-view="angled"[^>]*aria-pressed="true"/.test(page)) fail(`${where}: Angled view is not selected by default`);
     if (!page.includes(b.assets?.glb ?? "\0")) fail(`${where}: page does not reference the GLB`);
     if (text(b.reviewedBy) && !page.includes(`Reviewed by ${b.reviewedBy}`)) fail(`${where}: page does not name the reviewer`);
+    if (!page.includes("data-qualification") || !page.includes((b.qualification?.text ?? "\0").slice(0, 40))) fail(`${where}: page does not show the qualification status`);
     if (!page.includes("data-lightbox")) fail(`${where}: page has no image lightbox`);
     if (!page.includes('id="prompt-text"')) fail(`${where}: page does not show the runnable prompt`);
     // The whole source is on the page, not an excerpt: its last statement must be there.

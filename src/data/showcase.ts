@@ -3,6 +3,10 @@ export interface Board {
   title: string;
   tagline: string;
   status: string;
+  qualification: { text: string; evidence: { label: string; path: string }[] };
+  revision: string;
+  mainRevision: string;
+  reportBuildRevision: string;
   reviewedBy: string;
   summary: string;
   renderAlt: string;
@@ -21,28 +25,45 @@ export interface Board {
 }
 
 const reviewedBy = "Steve Munene";
+// One revision for every published artifact: absmach/synth#103, qualification/class-b/usb-uart/.
+const REVISION = "9333759";
+// absmach/synth main as merged into that revision.
+const MAIN_REVISION = "ed5e658";
+// The Synth main the routing and release reports were produced with, as QUALIFICATION.md records it.
+const REPORT_BUILD_REVISION = "bb9ae95";
 
 export const boards: Board[] = [
   {
     slug: "usb-uart",
     title: "USB-C dual UART and RS-485 adapter",
     tagline: "One USB-C cable. Two serial ports.",
-    status: `Not fabricated. Not tested on hardware. Reviewed by ${reviewedBy}.`,
+    status: `Engineering draft. Not fabricated. Not tested on hardware. Reviewed by ${reviewedBy}.`,
+    qualification: {
+      text: "This is an engineering draft and a showcase artifact. It is not a completed Class-B qualification result: the qualification matrix is published, but no signal-integrity, power-integrity or RF expert has signed it off, and Synth's release gate marks this package untrusted. The matrix, the gate result and the file hashes are linked below.",
+      evidence: [
+        { label: "Qualification matrix and open items", path: "QUALIFICATION.md" },
+        { label: "Release gate result (untrusted, not release-ready)", path: "reports/release.json" },
+        { label: "SHA-256 of every published file", path: "SHA256SUMS" },
+      ],
+    },
+    revision: REVISION,
+    mainRevision: MAIN_REVISION,
+    reportBuildRevision: REPORT_BUILD_REVISION,
     reviewedBy,
     summary:
-      "Port 1 is TTL serial for debugging microcontroller boards: console, flashing, logs. Port 2 is RS-485 for industrial gear such as Modbus sensors, meters and motor drives, and its direction is designed to switch by itself. Power comes from USB, and a jumper picks 3.3 V or 5 V I/O.",
+      "Port 1 is TTL serial for debugging microcontroller boards: console, flashing, logs. Port 2 is RS-485 for industrial gear such as Modbus sensors, meters and motor drives, and its direction is designed to switch by itself; a jumper fits the 120 Ω bus termination only when the board is at the end of the bus. Power comes from USB, and a jumper picks 3.3 V or 5 V I/O. Protection: ESD and TVS diodes on the USB side, and 10 Ω series resistors with a TVS array on the RS-485 A and B lines, following TI's surge circuit. The RS-485 network is not surge-tested.",
     renderAlt:
       "Ray-traced 3D view of a small green circuit board with a USB-C receptacle at the top edge, a QFN chip in the middle, an RS-485 chip on the right and four pin headers along the bottom edge",
     stats: [
-      { label: "Overall size", value: "45.1 × 35.8 mm" },
+      { label: "Overall size", value: "50.4 × 36.1 mm" },
       { label: "Layers", value: "4" },
-      { label: "Nets routed", value: "26 of 26" },
-      { label: "KiCad DRC", value: "0 errors" },
+      { label: "Nets routed", value: "29 of 29" },
+      { label: "KiCad DRC", value: "0 errors, 2 unconnected" },
     ],
     prompt: {
       summary:
-        "A real USB-C to dual-UART and RS-485 adapter, with ESD and surge protection, where every claim must be true and measured.",
-      note: "There is no single prompt: the board came from a long chat plus agent briefs. The prompt below is a cleaned, self-contained version of that brief, with our local setup removed, so you can run it yourself. It is not the exact text we ran, and a different run will not give an identical board. The original brief is linked below.",
+        "A real USB-C to dual-UART and RS-485 adapter, with USB ESD and TVS protection and a TI-style surge network on the RS-485 lines (not surge-tested), where every claim must be true and measured.",
+      note: "There is no single prompt: the board came from a long chat plus agent briefs. The prompt below is a cleaned, self-contained version of that brief, with our local setup removed, so you can run it yourself. It is not the exact text we ran, and it describes revision B of the board (switchable RS-485 termination and a surge network on A and B, added after review); the original brief produced revision A. A different run will not give an identical board. The original brief is linked below.",
     },
     model: "Claude Sonnet 5.5 (claude-sonnet-5-5), run in Claude Code",
     tools: [
@@ -55,24 +76,30 @@ export const boards: Board[] = [
       { ref: "U3", name: "TI THVD1450D", role: "RS-485 transceiver, direction set automatically" },
       { ref: "D1", name: "Nexperia PRTR5V0U2X", role: "ESD array on the USB data pair" },
       { ref: "D2 D5 D6", name: "Nexperia PTVS6V0S1UR", role: "TVS diodes on VBUS, CC1 and CC2" },
+      { ref: "R_A R_B D8", name: "10 Ω resistors, Bourns CDSOT23-SM712", role: "Series resistors and TVS array on the RS-485 A and B lines" },
+      { ref: "R_TERM J_TERM", name: "120 Ω resistor, 2-pin jumper", role: "Bus termination, in circuit only with the jumper fitted" },
       { ref: "U2", name: "TI LP5907", role: "3.3 V low-noise regulator" },
       { ref: "J1", name: "USB-C receptacle", role: "Power and data in" },
       { ref: "J_VIO", name: "3-pin jumper", role: "Picks 3.3 V or 5 V for the serial I/O" },
     ],
     checks: [
-      { label: "Routing", value: "26 nets connected, 0 open" },
-      { label: "KiCad design-rule check", value: "0 errors, 0 unconnected, 49 warnings (silkscreen and library notes). Report: reports/kicad-drc.json" },
-      { label: "Copper", value: "263 track segments, 28 vias, 549 mm" },
-      { label: "Time to route", value: "348 s on this run, on a laptop with a debug build. An earlier run of the same board took 117 s. From the route record." },
-      { label: "Router", value: "FreeRouting 2.4.1. Record: reports/synth-route-record.json" },
-      { label: "Synth build", value: "synth 0.1.1, built locally from absmach/synth main (commit 5f62566) plus the board's branch (absmach/synth#103, commit 722eb30). Ground pours are filled, as current main delivers them. KiCad 10.0.7 for the DRC and the 3D export." },
+      { label: "Routing", value: "29 nets connected, 0 open" },
+      { label: "KiCad design-rule check", value: "0 errors, 2 unconnected, 51 warnings (silkscreen and library notes) on the board as the router delivered it. Report: reports/usb_uart.drc.json" },
+      { label: "Release gate", value: "validation_failed. KiCad reports 2 unconnected ground-pour items, so Synth marks the package untrusted: fabrication_ready is false and release_ready is false. Records: reports/usb_uart.routing.json, reports/release.json" },
+      { label: "Copper", value: "265 track segments, 27 vias, 551 mm" },
+      { label: "Time to route", value: "273 s, from the route record." },
+      { label: "Router", value: "FreeRouting 2.4.1. Record: reports/usb_uart.routing.json" },
+      { label: "Published files", value: `Board, schematic, source and layout files are byte-identical to absmach/synth#103 at commit ${REVISION} (qualification/class-b/usb-uart/). The 3D model, copper-layer SVGs, schematic SVG and the renders are made from that board by KiCad 10.0.7 with the ground pours refilled. The routing and release reports have local paths replaced, so only their hashes in QUALIFICATION.md differ from these files.` },
+      { label: "Synth build", value: `The routing and release reports were produced by a local build of Synth main ${REPORT_BUILD_REVISION} plus the label placement of PR #144 (not merged then). PR #144 is in main ${MAIN_REVISION}, which ${REVISION} includes, and ${REVISION} exports a board byte-identical to the one published here.` },
     ],
     limits: [
-      `Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}.`,
+      `Engineering draft, not a completed Class-B qualification. Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}; no signal-integrity, power-integrity or RF expert has signed it off.`,
+      "The RS-485 surge network (10 Ω series resistors and a TVS array) follows TI's circuit but is not surge-tested, and the series resistors are not the pulse-proof part TI lists.",
+      "KiCad reports 2 unconnected ground-pour items, and the release gate fails. Re-saving the board in KiCad also reports 63 clearance errors that the raw router file does not show; the cause is not found.",
       "The U1 exposed pad holds one ground via inside the pad (0.6 mm pad, 0.3 mm drill). JLCPCB would have to fill and cap it, at extra cost on a 4-layer board. This is not confirmed with JLCPCB for this board.",
-      "The USB data pair is not impedance-verified. The router does not couple the pair: D+ is 17.0 mm and D- is 18.4 mm, a 1.4 mm skew.",
+      "The USB data pair is not impedance-verified. The router does not couple the pair: D+ is 17.1 mm and D- is 19.9 mm, a 2.7 mm skew (track centre-line length from the board file, not a field-solver result).",
       "KiCad's library has no 3D model for this USB-C connector, so the viewer shows no body for it.",
-      "Silkscreen reference text is oversized and overlaps. That is a current limit of the Synth exporter.",
+      "Some reference labels near U1 (C6, D6, D1) still crowd each other on the silkscreen.",
     ],
     source: { file: "usb_uart.synth" },
     schematicAlt:
@@ -83,7 +110,7 @@ export const boards: Board[] = [
         label: "Top",
         file: "layer-top.svg",
         alt: "Top copper layer with silkscreen: tracks and pads around the USB-C connector, the CH342F bridge and the RS-485 chip, over a ground pour",
-        note: "Top copper (F.Cu) with silkscreen. 225 track segments and a ground pour.",
+        note: "Top copper (F.Cu) with silkscreen. 226 track segments and a ground pour.",
       },
       {
         id: "inner1",
@@ -104,7 +131,7 @@ export const boards: Board[] = [
         label: "Bottom",
         file: "layer-bottom.svg",
         alt: "Bottom copper layer seen from below: a few tracks and a ground pour, with the through-hole header pads",
-        note: "Bottom copper (B.Cu), seen from below, so it is mirrored. 38 track segments and a ground pour.",
+        note: "Bottom copper (B.Cu), seen from below, so it is mirrored. 39 track segments and a ground pour.",
       },
     ],
     assets: {
@@ -122,8 +149,12 @@ export const boards: Board[] = [
       { label: "KiCad project", path: "kicad/usb_uart.kicad_pro", note: "Project settings" },
       { label: "Bill of materials", path: "kicad/bom.csv", note: "Reference, value, description" },
       { label: "3D model", path: "usb-uart.glb", note: "Binary glTF, as shown in the viewer" },
-      { label: "Route record", path: "reports/synth-route-record.json", note: "Synth's routing run: router, settings, nets, segments, vias. Local paths replaced." },
-      { label: "Design-rule check", path: "reports/kicad-drc.json", note: "KiCad 10 DRC report for the routed board" },
+      { label: "Connectivity report", path: "reports/usb_uart.connectivity.json", note: "Synth's connectivity check, re-derived from the copper" },
+      { label: "Route record", path: "reports/usb_uart.routing.json", note: "Synth's routing run: router, settings, nets, segments, vias. Local paths replaced." },
+      { label: "Design-rule check", path: "reports/usb_uart.drc.json", note: "KiCad 10 DRC report for the routed board" },
+      { label: "Qualification matrix", path: "QUALIFICATION.md", note: "What was checked, what was not, and what is open" },
+      { label: "File hashes", path: "SHA256SUMS", note: "SHA-256 of every file in this folder except the zip" },
+      { label: "Release gate result", path: "reports/release.json", note: "Synth's release gate: untrusted, not release-ready. Local paths replaced." },
       { label: "Prompt", path: "prompt.md", note: "A cleaned version you can run yourself" },
       { label: "Original agent brief", path: "brief.txt", note: "Round 2, word for word, as we gave it" },
     ],

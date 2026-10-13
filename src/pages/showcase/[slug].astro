@@ -72,6 +72,10 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
         <p class="sc-tagline">{board.tagline}</p>
         <p class="sc-facts">{facts}</p>
         <p class="sc-status-note">{board.status}</p>
+        <div class="sc-draft" data-qualification>
+          <p>{board.qualification.text}</p>
+          <p class="sc-draft-links">{board.qualification.evidence.map((e) => <a class="text-link" href={asset(e.path)}>{e.label}</a>)}</p>
+        </div>
       </section>
 
       <section class="sc-viewer wrap" aria-label="Interactive 3D view" data-board-viewer data-glb={asset(board.assets.glb)} data-label={`3D view of ${board.title}. ${board.renderAlt}`}>

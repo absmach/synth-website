@@ -39,6 +39,18 @@
   color: #8a4b12;
 }
 
+.sc-draft {
+  margin: 12px 0 0;
+  max-width: 68ch;
+  padding: 10px 14px;
+  border-left: 3px solid #b86a1d;
+  background: #fff6ea;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.sc-draft p { margin: 0; }
+.sc-draft-links { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 6px !important; }
+
 .sc-stage {
   position: relative;
   height: clamp(380px, 64vh, 660px);

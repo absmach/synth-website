@@ -26,7 +26,7 @@ export interface Board {
 
 const reviewedBy = "Steve Munene";
 // One revision for every published artifact: absmach/synth#103, qualification/class-b/usb-uart/.
-const REVISION = "8e6352d";
+const REVISION = "7df2501";
 // absmach/synth main as merged into that revision.
 const MAIN_REVISION = "157f6ea";
 // The Synth main the routing and release reports were produced with, as QUALIFICATION.md records it.
@@ -85,7 +85,7 @@ export const boards: Board[] = [
     ],
     checks: [
       { label: "Routing", value: "29 nets connected, 0 open" },
-      { label: "KiCad design-rule check", value: "0 errors, 0 unconnected, 54 warnings (silkscreen and library notes), also after a KiCad re-save, run with the project's custom rules (copper to edge and to holes at 0.2 mm, the JLCPCB minimum). Report: reports/usb_uart.drc.json" },
+      { label: "KiCad design-rule check", value: "0 errors, 0 unconnected, 54 warnings (silkscreen and library notes), also after a KiCad re-save, run with the project's custom rules (copper to a board edge 0.3 mm, to a hole or an NPTH hole 0.2 mm, from the JLCPCB profile). Report: reports/usb_uart.drc.json" },
       { label: "Release gate", value: "Passed: release_ready and fabrication_ready are true in Synth's records. That means Synth's own checks passed (routed, 0 open nets, KiCad DRC clean). It is not a manufacturing sign-off: nothing was fabricated or tested, and the fabrication note below applies. Records: reports/usb_uart.routing.json, reports/release.json" },
       { label: "Fabrication note", value: "One via-in-pad: the U1 exposed-pad ground via at (23.8, 19.8) mm needs filled and capped vias at the fab. Not confirmed with JLCPCB for this board." },
       { label: "Copper", value: "306 track segments, 36 vias, 584 mm. VBUS is routed at 0.3 mm to fit the connector's 0.3 mm contacts." },
@@ -97,7 +97,7 @@ export const boards: Board[] = [
     limits: [
       `Engineering draft, not a completed Class-B qualification. Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}; no signal-integrity, power-integrity or RF expert has signed it off.`,
       "The RS-485 surge network (10 Ω series resistors and a TVS array) follows TI's circuit but is not surge-tested, and the series resistors are not the pulse-proof part TI lists.",
-      "The design-rule check uses JLCPCB's 0.2 mm for copper to the board edge and to holes, not KiCad's stricter 0.5 mm and 0.25 mm defaults: the connector's NPTH holes sit 0.30 to 0.33 mm from its pads. A reviewer may want the wider margin.",
+      "The design-rule check holds copper to an NPTH hole at JLCPCB's 0.2 mm, not KiCad's stricter 0.5 mm and 0.25 mm defaults (a board edge stays at 0.3 mm): the connector's NPTH holes sit 0.30 to 0.33 mm from its pads. A reviewer may want the wider margin.",
       "The U1 exposed pad holds one ground via inside the pad (0.6 mm pad, 0.3 mm drill). JLCPCB would have to fill and cap it, at extra cost on a 4-layer board. This is not confirmed with JLCPCB for this board.",
       "The USB data pair is not impedance-verified. The router does not couple the pair: D+ is 31.8 mm on the top layer and D- is 45.3 mm with 3 vias, mostly on the bottom layer, a 13.5 mm skew. That is a poor pair for USB: it is the router's result, and nobody tuned it (track centre-line length from the board file, not a field-solver result).",
       "The USB-C connector's manufacturer datasheet was not read (the Amphenol site refused every request), so its pinout, ratings and drawing are KiCad's footprint only. The viewer shows the 3D model KiCad ships for it.",
@@ -149,7 +149,7 @@ export const boards: Board[] = [
       { label: "KiCad schematic", path: "kicad/usb_uart.kicad_sch", note: "Generated sheet" },
       { label: "KiCad symbols", path: "kicad/usb_uart.kicad_sym", note: "Generated symbol library" },
       { label: "KiCad project", path: "kicad/usb_uart.kicad_pro", note: "Project settings" },
-      { label: "KiCad custom rules", path: "kicad/usb_uart.kicad_dru", note: "Copper to edge and to hole at 0.2 mm, the manufacturer minimum" },
+      { label: "KiCad custom rules", path: "kicad/usb_uart.kicad_dru", note: "Copper to a board edge 0.3 mm, to a hole or NPTH hole 0.2 mm, from the manufacturer profile" },
       { label: "Bill of materials", path: "kicad/bom.csv", note: "Reference, value, description" },
       { label: "3D model", path: "usb-uart.glb", note: "Binary glTF, as shown in the viewer" },
       { label: "3D model (STEP)", path: "usb_uart.step", note: "The whole board as a STEP assembly, with KiCad's model of the connector, for CAD and enclosure work" },

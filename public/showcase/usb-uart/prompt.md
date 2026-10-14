@@ -32,7 +32,7 @@ One USB-C cable gives a computer two serial ports.
 - Nexperia PTVS6V0S1UR, 400 W TVS diodes on VBUS, CC1 and CC2, close to the connector.
 - Bourns CDSOT23-SM712, TVS array on the RS-485 A and B lines.
 - TI LP5907-3.3 LDO (SOT-23-5): 2.2 µF in and out, EN tied to VIN. It makes +3V3 for the jumper.
-- USB-C receptacle (Amphenol 12401610E4#2A, a stock KiCad footprint with a 3D model), flush with the top board edge and centred along it. Four M2.5 mounting holes: two in the top corners and two halfway down the sides, each clear of every other courtyard. Connect all its VBUS pins to VBUS, and its ground and shield pins to GND. CC1 and CC2 each get 5.1 kΩ to GND so a USB-C host supplies 5 V. Both the A-side and B-side D+ and D- pins are tied together (the plug works either way round) and go straight to the bridge with no series resistor, as a declared 90 Ω differential pair.
+- USB-C receptacle (Amphenol 12401610E4#2A, a stock KiCad footprint with a 3D model), flush with the top board edge and centred along it. Four M3 mounting holes (3.2 mm): two in the top corners and two halfway down the sides, each clear of every other courtyard. Connect all its VBUS pins to VBUS, and its ground and shield pins to GND. CC1 and CC2 each get 5.1 kΩ to GND so a USB-C host supplies 5 V. Both the A-side and B-side D+ and D- pins are tied together (the plug works either way round) and go straight to the bridge with no series resistor, as a declared 90 Ω differential pair.
 - LEDs (Lite-On LTST-C190 series, 0603): green on VIO, red on TXD0 and TXD1, each with 470 Ω.
 - Headers J2, J3, J4 and J_VIO are 1 x 3, 2.54 mm pitch, through-hole.
 - All resistors and capacitors are 0603. Capacitors are X7R, 16 V.

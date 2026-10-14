@@ -39,7 +39,7 @@
       "reviewed": false
     },
     {
-      "part_id": "mounting_hole_m2_5",
+      "part_id": "mounting_hole_m3",
       "reviewed": false
     },
     {
@@ -67,10 +67,10 @@
     "engine": "freerouting",
     "engine_version": "<run>",
     "state": "routed",
-    "input_hash": "50e786685d73de9c2df722ef1abb85c7f42b3e81a0a7283aeb3fd5ec304ddde7",
+    "input_hash": "a0421ebcfddab3ad669a78affb556bc077f0668317c451bb2e070963bd3a2c74",
     "run_record": "<run>",
     "fabrication_notes": [
-      "via at (23.400, 19.800) mm U1.25: via-in-pad, order with filled and capped vias"
+      "via at (23.800, 19.800) mm U1.25: via-in-pad, order with filled and capped vias"
     ]
   }
 }

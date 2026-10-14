@@ -26,7 +26,7 @@ export interface Board {
 
 const reviewedBy = "Steve Munene";
 // One revision for every published artifact: absmach/synth#103, qualification/class-b/usb-uart/.
-const REVISION = "3a45fef";
+const REVISION = "8e6352d";
 // absmach/synth main as merged into that revision.
 const MAIN_REVISION = "157f6ea";
 // The Synth main the routing and release reports were produced with, as QUALIFICATION.md records it.
@@ -53,7 +53,7 @@ export const boards: Board[] = [
     summary:
       "Port 1 is TTL serial for debugging microcontroller boards: console, flashing, logs. Port 2 is RS-485 for industrial gear such as Modbus sensors, meters and motor drives, and its direction is designed to switch by itself; a jumper fits the 120 Ω bus termination only when the board is at the end of the bus. Power comes from USB, and a jumper picks 3.3 V or 5 V I/O. Protection: ESD and TVS diodes on the USB side, and 10 Ω series resistors with a TVS array on the RS-485 A and B lines, following TI's surge circuit. The RS-485 network is not surge-tested.",
     renderAlt:
-      "Ray-traced 3D view of a small green circuit board with a USB-C receptacle at the top edge, a QFN chip in the middle, an RS-485 chip on the right, four mounting holes and five pin headers along the bottom edge",
+      "Ray-traced 3D view of a small green circuit board with a USB-C receptacle at the top edge, a QFN chip in the middle, an RS-485 chip on the right, four large mounting holes and five pin headers along the bottom edge",
     stats: [
       { label: "Overall size", value: "50.5 × 38.4 mm" },
       { label: "Layers", value: "4" },
@@ -80,16 +80,16 @@ export const boards: Board[] = [
       { ref: "R_TERM J_TERM", name: "120 Ω resistor, 2-pin jumper", role: "Bus termination, in circuit only with the jumper fitted" },
       { ref: "U2", name: "TI LP5907", role: "3.3 V low-noise regulator" },
       { ref: "J1", name: "Amphenol 12401610E4#2A", role: "USB-C receptacle: power and data in" },
-      { ref: "H1 to H4", name: "M2.5 mounting holes", role: "Four non-plated holes, two in the top corners and two at the sides" },
+      { ref: "H1 to H4", name: "M3 mounting holes", role: "Four 3.2 mm non-plated holes, two in the top corners and two at the sides" },
       { ref: "J_VIO", name: "3-pin jumper", role: "Picks 3.3 V or 5 V for the serial I/O" },
     ],
     checks: [
       { label: "Routing", value: "29 nets connected, 0 open" },
       { label: "KiCad design-rule check", value: "0 errors, 0 unconnected, 54 warnings (silkscreen and library notes), also after a KiCad re-save, run with the project's custom rules (copper to edge and to holes at 0.2 mm, the JLCPCB minimum). Report: reports/usb_uart.drc.json" },
       { label: "Release gate", value: "Passed: release_ready and fabrication_ready are true in Synth's records. That means Synth's own checks passed (routed, 0 open nets, KiCad DRC clean). It is not a manufacturing sign-off: nothing was fabricated or tested, and the fabrication note below applies. Records: reports/usb_uart.routing.json, reports/release.json" },
-      { label: "Fabrication note", value: "One via-in-pad: the U1 exposed-pad ground via at (23.4, 19.8) mm needs filled and capped vias at the fab. Not confirmed with JLCPCB for this board." },
-      { label: "Copper", value: "250 track segments, 25 vias, 568 mm. VBUS is routed at 0.3 mm to fit the connector's 0.3 mm contacts." },
-      { label: "Time to route", value: "302 s, from the route record. The delivered placement is the best of about 15 tried: the others left 1 to 3 nets open or had DRC errors." },
+      { label: "Fabrication note", value: "One via-in-pad: the U1 exposed-pad ground via at (23.8, 19.8) mm needs filled and capped vias at the fab. Not confirmed with JLCPCB for this board." },
+      { label: "Copper", value: "306 track segments, 36 vias, 584 mm. VBUS is routed at 0.3 mm to fit the connector's 0.3 mm contacts." },
+      { label: "Time to route", value: "206 s, from the route record. Only 1 of the 23 placements tried with the M3 holes passed: the others left 1 to 3 nets open, a stray ground-pour piece or DRC errors. The result changes from one placement to the next." },
       { label: "Router", value: "FreeRouting 2.4.1. Record: reports/usb_uart.routing.json" },
       { label: "Published files", value: `Board, schematic, source and layout files are byte-identical to absmach/synth#103 at commit ${REVISION} (qualification/class-b/usb-uart/). The 3D model, copper-layer SVGs, schematic SVG and the renders are made from that board by KiCad 10.0.7 with the ground pours refilled. The routing and release reports have local paths replaced, so only their hashes in QUALIFICATION.md differ from these files.` },
       { label: "Synth build", value: `The routing and release reports were produced by a local build of PR #103 merged with Synth main ${REPORT_BUILD_REVISION} plus the not-yet-merged PRs #154 (clearances in the exported project file and the DRC) and #162 (outline round mounting holes). ${REVISION} exports a board byte-identical to the one published here only with those two PRs.` },
@@ -99,7 +99,7 @@ export const boards: Board[] = [
       "The RS-485 surge network (10 Ω series resistors and a TVS array) follows TI's circuit but is not surge-tested, and the series resistors are not the pulse-proof part TI lists.",
       "The design-rule check uses JLCPCB's 0.2 mm for copper to the board edge and to holes, not KiCad's stricter 0.5 mm and 0.25 mm defaults: the connector's NPTH holes sit 0.30 to 0.33 mm from its pads. A reviewer may want the wider margin.",
       "The U1 exposed pad holds one ground via inside the pad (0.6 mm pad, 0.3 mm drill). JLCPCB would have to fill and cap it, at extra cost on a 4-layer board. This is not confirmed with JLCPCB for this board.",
-      "The USB data pair is not impedance-verified. The router does not couple the pair: D+ is 19.3 mm and D- is 15.7 mm, a 3.5 mm skew, and both lines run mostly on the bottom layer (track centre-line length from the board file, not a field-solver result).",
+      "The USB data pair is not impedance-verified. The router does not couple the pair: D+ is 31.8 mm on the top layer and D- is 45.3 mm with 3 vias, mostly on the bottom layer, a 13.5 mm skew. That is a poor pair for USB: it is the router's result, and nobody tuned it (track centre-line length from the board file, not a field-solver result).",
       "The USB-C connector's manufacturer datasheet was not read (the Amphenol site refused every request), so its pinout, ratings and drawing are KiCad's footprint only. The viewer shows the 3D model KiCad ships for it.",
       "Some reference labels near U1 (C6, D6, D1) still crowd each other on the silkscreen.",
     ],
@@ -112,7 +112,7 @@ export const boards: Board[] = [
         label: "Top",
         file: "layer-top.svg",
         alt: "Top copper layer with silkscreen: tracks and pads around the USB-C connector, the CH342F bridge and the RS-485 chip, over a ground pour",
-        note: "Top copper (F.Cu) with silkscreen. 220 track segments and a ground pour.",
+        note: "Top copper (F.Cu) with silkscreen. 229 track segments and a ground pour.",
       },
       {
         id: "inner1",
@@ -133,7 +133,7 @@ export const boards: Board[] = [
         label: "Bottom",
         file: "layer-bottom.svg",
         alt: "Bottom copper layer seen from below: a few tracks and a ground pour, with the through-hole header pads",
-        note: "Bottom copper (B.Cu), seen from below, so it is mirrored. 30 track segments and a ground pour.",
+        note: "Bottom copper (B.Cu), seen from below, so it is mirrored. 77 track segments and a ground pour.",
       },
     ],
     assets: {

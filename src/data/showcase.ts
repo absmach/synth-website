@@ -152,6 +152,7 @@ export const boards: Board[] = [
       { label: "KiCad custom rules", path: "kicad/usb_uart.kicad_dru", note: "Copper to edge and to hole at 0.2 mm, the manufacturer minimum" },
       { label: "Bill of materials", path: "kicad/bom.csv", note: "Reference, value, description" },
       { label: "3D model", path: "usb-uart.glb", note: "Binary glTF, as shown in the viewer" },
+      { label: "3D model (STEP)", path: "usb_uart.step", note: "The whole board as a STEP assembly, with KiCad's model of the connector, for CAD and enclosure work" },
       { label: "Connectivity report", path: "reports/usb_uart.connectivity.json", note: "Synth's connectivity check, re-derived from the copper" },
       { label: "Route record", path: "reports/usb_uart.routing.json", note: "Synth's routing run: router, settings, nets, segments, vias. Local paths replaced." },
       { label: "Design-rule check", path: "reports/usb_uart.drc.json", note: "KiCad 10 DRC report for the routed board" },

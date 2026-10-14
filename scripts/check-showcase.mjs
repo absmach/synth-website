@@ -140,6 +140,7 @@ for (const b of boards) {
     if (!/data-view="angled"[^>]*aria-pressed="true"/.test(page)) fail(`${where}: Angled view is not selected by default`);
     if (!page.includes(b.assets?.glb ?? "\0")) fail(`${where}: page does not reference the GLB`);
     if (text(b.reviewedBy) && !page.includes(`Reviewed by ${b.reviewedBy}`)) fail(`${where}: page does not name the reviewer`);
+    if (page.indexOf("data-qualification") < page.indexOf('id="files"')) fail(`${where}: the qualification note belongs at the end of the page, after the files section`);
     if (!page.includes("data-qualification") || !page.includes((b.qualification?.text ?? "\0").slice(0, 40))) fail(`${where}: page does not show the qualification status`);
     if (!page.includes("data-lightbox")) fail(`${where}: page has no image lightbox`);
     if (!page.includes('id="prompt-text"')) fail(`${where}: page does not show the runnable prompt`);

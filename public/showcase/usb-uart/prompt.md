@@ -21,7 +21,7 @@ Rules: edit only the `.synth` source and its two layout files, never the generat
 One USB-C cable gives a computer two serial ports.
 
 - **Port 1: TTL serial** for debugging microcontroller boards. It comes out on two 3-pin headers: J2 = GND, TXD1, RXD1 (pin 1 is GND), and J3 = DTR1, RTS1, CTS1. Put 1 kΩ in series with RXD1 and with CTS1.
-- **Port 2: RS-485** for industrial gear. A 3-pin header J4 = A, B, GND. Put a 120 Ω 1 % termination resistor across A and B, but connect it through a 2-pin jumper so it is only in circuit when the board is at the end of the bus. Put a 10 Ω resistor in series with each of A and B, then a Bourns CDSOT23-SM712 TVS array to ground on the bus side (TI's surge circuit, SLLSEY3E figure 37). Its direction switches by itself, with no software control.
+- **Port 2: RS-485** for industrial gear. A 3-pin header J4 = A, B, GND. Put a 120 Ω 1 % termination resistor across A and B, but connect it through a 2-pin jumper so it is only in circuit when the board is at the end of the bus. Put a 10 Ω resistor in series with each of A and B, then a Bourns CDSOT23-SM712 TVS array to ground on the bus side (TI's surge circuit, SLLSEY3E figure 37). Its direction switches by itself, with no software control. Route VBUS no wider than 0.3 mm near the connector, whose contacts are 0.3 mm wide at 0.5 mm pitch.
 - **Power** comes from USB. A 3-pin jumper J_VIO picks the serial I/O voltage: pin 1 = +3V3, pin 2 = VIO, pin 3 = VBUS. Jumper 1-2 gives 3.3 V, jumper 2-3 gives 5 V. With no jumper, VIO is unpowered; state in the README what the bridge does then, from its datasheet. Think through what a forgotten jumper does to the rest of the board, and say it in the README.
 
 ### Parts
@@ -32,7 +32,7 @@ One USB-C cable gives a computer two serial ports.
 - Nexperia PTVS6V0S1UR, 400 W TVS diodes on VBUS, CC1 and CC2, close to the connector.
 - Bourns CDSOT23-SM712, TVS array on the RS-485 A and B lines.
 - TI LP5907-3.3 LDO (SOT-23-5): 2.2 µF in and out, EN tied to VIN. It makes +3V3 for the jumper.
-- USB-C receptacle (HRO TYPE-C-31-M-12), flush with the top board edge. Connect all its VBUS pins to VBUS, and its ground and shield pins to GND. CC1 and CC2 each get 5.1 kΩ to GND so a USB-C host supplies 5 V. Both the A-side and B-side D+ and D- pins are tied together (the plug works either way round) and go straight to the bridge with no series resistor, as a declared 90 Ω differential pair.
+- USB-C receptacle (Amphenol 12401610E4#2A, a stock KiCad footprint with a 3D model), flush with the top board edge and centred along it. Four M2.5 mounting holes: two in the top corners and two halfway down the sides, each clear of every other courtyard. Connect all its VBUS pins to VBUS, and its ground and shield pins to GND. CC1 and CC2 each get 5.1 kΩ to GND so a USB-C host supplies 5 V. Both the A-side and B-side D+ and D- pins are tied together (the plug works either way round) and go straight to the bridge with no series resistor, as a declared 90 Ω differential pair.
 - LEDs (Lite-On LTST-C190 series, 0603): green on VIO, red on TXD0 and TXD1, each with 470 Ω.
 - Headers J2, J3, J4 and J_VIO are 1 x 3, 2.54 mm pitch, through-hole.
 - All resistors and capacitors are 0603. Capacitors are X7R, 16 V.

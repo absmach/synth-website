@@ -26,11 +26,11 @@ export interface Board {
 
 const reviewedBy = "Steve Munene";
 // One revision for every published artifact: absmach/synth#103, qualification/class-b/usb-uart/.
-const REVISION = "9333759";
+const REVISION = "3a45fef";
 // absmach/synth main as merged into that revision.
-const MAIN_REVISION = "ed5e658";
+const MAIN_REVISION = "157f6ea";
 // The Synth main the routing and release reports were produced with, as QUALIFICATION.md records it.
-const REPORT_BUILD_REVISION = "bb9ae95";
+const REPORT_BUILD_REVISION = "157f6ea";
 
 export const boards: Board[] = [
   {
@@ -39,10 +39,10 @@ export const boards: Board[] = [
     tagline: "One USB-C cable. Two serial ports.",
     status: `Engineering draft. Not fabricated. Not tested on hardware. Reviewed by ${reviewedBy}.`,
     qualification: {
-      text: "This is an engineering draft and a showcase artifact. It is not a completed Class-B qualification result: the qualification matrix is published, but no signal-integrity, power-integrity or RF expert has signed it off, and Synth's release gate marks this package untrusted. The matrix, the gate result and the file hashes are linked below.",
+      text: "This is an engineering draft and a showcase artifact. It is not a completed Class-B qualification result: the qualification matrix is published, but no signal-integrity, power-integrity or RF expert has signed it off, and Synth's release gate passing is not a qualification. The matrix, the gate result and the file hashes are linked below.",
       evidence: [
         { label: "Qualification matrix and open items", path: "QUALIFICATION.md" },
-        { label: "Release gate result (untrusted, not release-ready)", path: "reports/release.json" },
+        { label: "Release gate result", path: "reports/release.json" },
         { label: "SHA-256 of every published file", path: "SHA256SUMS" },
       ],
     },
@@ -53,17 +53,17 @@ export const boards: Board[] = [
     summary:
       "Port 1 is TTL serial for debugging microcontroller boards: console, flashing, logs. Port 2 is RS-485 for industrial gear such as Modbus sensors, meters and motor drives, and its direction is designed to switch by itself; a jumper fits the 120 Ω bus termination only when the board is at the end of the bus. Power comes from USB, and a jumper picks 3.3 V or 5 V I/O. Protection: ESD and TVS diodes on the USB side, and 10 Ω series resistors with a TVS array on the RS-485 A and B lines, following TI's surge circuit. The RS-485 network is not surge-tested.",
     renderAlt:
-      "Ray-traced 3D view of a small green circuit board with a USB-C receptacle at the top edge, a QFN chip in the middle, an RS-485 chip on the right and four pin headers along the bottom edge",
+      "Ray-traced 3D view of a small green circuit board with a USB-C receptacle at the top edge, a QFN chip in the middle, an RS-485 chip on the right, four mounting holes and five pin headers along the bottom edge",
     stats: [
-      { label: "Overall size", value: "50.4 × 36.1 mm" },
+      { label: "Overall size", value: "50.5 × 38.4 mm" },
       { label: "Layers", value: "4" },
       { label: "Nets routed", value: "29 of 29" },
-      { label: "KiCad DRC", value: "0 errors, 2 unconnected" },
+      { label: "KiCad DRC", value: "0 errors, 0 unconnected" },
     ],
     prompt: {
       summary:
         "A real USB-C to dual-UART and RS-485 adapter, with USB ESD and TVS protection and a TI-style surge network on the RS-485 lines (not surge-tested), where every claim must be true and measured.",
-      note: "There is no single prompt: the board came from a long chat plus agent briefs. The prompt below is a cleaned, self-contained version of that brief, with our local setup removed, so you can run it yourself. It is not the exact text we ran, and it describes revision B of the board (switchable RS-485 termination and a surge network on A and B, added after review); the original brief produced revision A. A different run will not give an identical board. The original brief is linked below.",
+      note: "There is no single prompt: the board came from a long chat plus agent briefs. The prompt below is a cleaned, self-contained version of that brief, with our local setup removed, so you can run it yourself. It is not the exact text we ran, and it describes revision B of the board (switchable RS-485 termination and a surge network on A and B, added after review), the Amphenol connector, four mounting holes and a 0.3 mm VBUS; the original brief produced revision A. A different run will not give an identical board. The original brief is linked below.",
     },
     model: "Claude Sonnet 5.5 (claude-sonnet-5-5), run in Claude Code",
     tools: [
@@ -79,26 +79,28 @@ export const boards: Board[] = [
       { ref: "R_A R_B D8", name: "10 Ω resistors, Bourns CDSOT23-SM712", role: "Series resistors and TVS array on the RS-485 A and B lines" },
       { ref: "R_TERM J_TERM", name: "120 Ω resistor, 2-pin jumper", role: "Bus termination, in circuit only with the jumper fitted" },
       { ref: "U2", name: "TI LP5907", role: "3.3 V low-noise regulator" },
-      { ref: "J1", name: "USB-C receptacle", role: "Power and data in" },
+      { ref: "J1", name: "Amphenol 12401610E4#2A", role: "USB-C receptacle: power and data in" },
+      { ref: "H1 to H4", name: "M2.5 mounting holes", role: "Four non-plated holes, two in the top corners and two at the sides" },
       { ref: "J_VIO", name: "3-pin jumper", role: "Picks 3.3 V or 5 V for the serial I/O" },
     ],
     checks: [
       { label: "Routing", value: "29 nets connected, 0 open" },
-      { label: "KiCad design-rule check", value: "0 errors, 2 unconnected, 51 warnings (silkscreen and library notes) on the board as the router delivered it. Report: reports/usb_uart.drc.json" },
-      { label: "Release gate", value: "validation_failed. KiCad reports 2 unconnected ground-pour items, so Synth marks the package untrusted: fabrication_ready is false and release_ready is false. Records: reports/usb_uart.routing.json, reports/release.json" },
-      { label: "Copper", value: "265 track segments, 27 vias, 551 mm" },
-      { label: "Time to route", value: "273 s, from the route record." },
+      { label: "KiCad design-rule check", value: "0 errors, 0 unconnected, 54 warnings (silkscreen and library notes), also after a KiCad re-save, run with the project's custom rules (copper to edge and to holes at 0.2 mm, the JLCPCB minimum). Report: reports/usb_uart.drc.json" },
+      { label: "Release gate", value: "Passed: release_ready and fabrication_ready are true in Synth's records. That means Synth's own checks passed (routed, 0 open nets, KiCad DRC clean). It is not a manufacturing sign-off: nothing was fabricated or tested, and the fabrication note below applies. Records: reports/usb_uart.routing.json, reports/release.json" },
+      { label: "Fabrication note", value: "One via-in-pad: the U1 exposed-pad ground via at (23.4, 19.8) mm needs filled and capped vias at the fab. Not confirmed with JLCPCB for this board." },
+      { label: "Copper", value: "250 track segments, 25 vias, 568 mm. VBUS is routed at 0.3 mm to fit the connector's 0.3 mm contacts." },
+      { label: "Time to route", value: "302 s, from the route record. The delivered placement is the best of about 15 tried: the others left 1 to 3 nets open or had DRC errors." },
       { label: "Router", value: "FreeRouting 2.4.1. Record: reports/usb_uart.routing.json" },
       { label: "Published files", value: `Board, schematic, source and layout files are byte-identical to absmach/synth#103 at commit ${REVISION} (qualification/class-b/usb-uart/). The 3D model, copper-layer SVGs, schematic SVG and the renders are made from that board by KiCad 10.0.7 with the ground pours refilled. The routing and release reports have local paths replaced, so only their hashes in QUALIFICATION.md differ from these files.` },
-      { label: "Synth build", value: `The routing and release reports were produced by a local build of Synth main ${REPORT_BUILD_REVISION} plus the label placement of PR #144 (not merged then). PR #144 is in main ${MAIN_REVISION}, which ${REVISION} includes, and ${REVISION} exports a board byte-identical to the one published here.` },
+      { label: "Synth build", value: `The routing and release reports were produced by a local build of PR #103 merged with Synth main ${REPORT_BUILD_REVISION} plus the not-yet-merged PRs #154 (clearances in the exported project file and the DRC) and #162 (outline round mounting holes). ${REVISION} exports a board byte-identical to the one published here only with those two PRs.` },
     ],
     limits: [
       `Engineering draft, not a completed Class-B qualification. Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}; no signal-integrity, power-integrity or RF expert has signed it off.`,
       "The RS-485 surge network (10 Ω series resistors and a TVS array) follows TI's circuit but is not surge-tested, and the series resistors are not the pulse-proof part TI lists.",
-      "KiCad reports 2 unconnected ground-pour items, and the release gate fails. Re-saving the board in KiCad also reports 63 clearance errors that the raw router file does not show; the cause is not found.",
+      "The design-rule check uses JLCPCB's 0.2 mm for copper to the board edge and to holes, not KiCad's stricter 0.5 mm and 0.25 mm defaults: the connector's NPTH holes sit 0.30 to 0.33 mm from its pads. A reviewer may want the wider margin.",
       "The U1 exposed pad holds one ground via inside the pad (0.6 mm pad, 0.3 mm drill). JLCPCB would have to fill and cap it, at extra cost on a 4-layer board. This is not confirmed with JLCPCB for this board.",
-      "The USB data pair is not impedance-verified. The router does not couple the pair: D+ is 17.1 mm and D- is 19.9 mm, a 2.7 mm skew (track centre-line length from the board file, not a field-solver result).",
-      "KiCad's library has no 3D model for this USB-C connector, so the viewer shows no body for it.",
+      "The USB data pair is not impedance-verified. The router does not couple the pair: D+ is 19.3 mm and D- is 15.7 mm, a 3.5 mm skew, and both lines run mostly on the bottom layer (track centre-line length from the board file, not a field-solver result).",
+      "The USB-C connector's manufacturer datasheet was not read (the Amphenol site refused every request), so its pinout, ratings and drawing are KiCad's footprint only. The viewer shows the 3D model KiCad ships for it.",
       "Some reference labels near U1 (C6, D6, D1) still crowd each other on the silkscreen.",
     ],
     source: { file: "usb_uart.synth" },
@@ -110,7 +112,7 @@ export const boards: Board[] = [
         label: "Top",
         file: "layer-top.svg",
         alt: "Top copper layer with silkscreen: tracks and pads around the USB-C connector, the CH342F bridge and the RS-485 chip, over a ground pour",
-        note: "Top copper (F.Cu) with silkscreen. 226 track segments and a ground pour.",
+        note: "Top copper (F.Cu) with silkscreen. 220 track segments and a ground pour.",
       },
       {
         id: "inner1",
@@ -131,7 +133,7 @@ export const boards: Board[] = [
         label: "Bottom",
         file: "layer-bottom.svg",
         alt: "Bottom copper layer seen from below: a few tracks and a ground pour, with the through-hole header pads",
-        note: "Bottom copper (B.Cu), seen from below, so it is mirrored. 39 track segments and a ground pour.",
+        note: "Bottom copper (B.Cu), seen from below, so it is mirrored. 30 track segments and a ground pour.",
       },
     ],
     assets: {
@@ -147,6 +149,7 @@ export const boards: Board[] = [
       { label: "KiCad schematic", path: "kicad/usb_uart.kicad_sch", note: "Generated sheet" },
       { label: "KiCad symbols", path: "kicad/usb_uart.kicad_sym", note: "Generated symbol library" },
       { label: "KiCad project", path: "kicad/usb_uart.kicad_pro", note: "Project settings" },
+      { label: "KiCad custom rules", path: "kicad/usb_uart.kicad_dru", note: "Copper to edge and to hole at 0.2 mm, the manufacturer minimum" },
       { label: "Bill of materials", path: "kicad/bom.csv", note: "Reference, value, description" },
       { label: "3D model", path: "usb-uart.glb", note: "Binary glTF, as shown in the viewer" },
       { label: "Connectivity report", path: "reports/usb_uart.connectivity.json", note: "Synth's connectivity check, re-derived from the copper" },
@@ -154,7 +157,7 @@ export const boards: Board[] = [
       { label: "Design-rule check", path: "reports/usb_uart.drc.json", note: "KiCad 10 DRC report for the routed board" },
       { label: "Qualification matrix", path: "QUALIFICATION.md", note: "What was checked, what was not, and what is open" },
       { label: "File hashes", path: "SHA256SUMS", note: "SHA-256 of every file in this folder except the zip" },
-      { label: "Release gate result", path: "reports/release.json", note: "Synth's release gate: untrusted, not release-ready. Local paths replaced." },
+      { label: "Release gate result", path: "reports/release.json", note: "Synth's release gate record. Local paths replaced." },
       { label: "Prompt", path: "prompt.md", note: "A cleaned version you can run yourself" },
       { label: "Original agent brief", path: "brief.txt", note: "Round 2, word for word, as we gave it" },
     ],

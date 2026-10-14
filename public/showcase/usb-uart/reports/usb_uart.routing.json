@@ -1,6 +1,6 @@
 {
   "schema_version": "synth.routing.v1",
-  "state": "validation_failed",
+  "state": "routed",
   "engine": "freerouting",
   "capability": {
     "engine": "freerouting",
@@ -41,22 +41,22 @@
       "threads": "4",
       "wall_clock_secs": "1200"
     },
-    "input_hash": "9cc04ace87dc40fb010e9f57466711f4052ee3debf0543857c51b8d812db5a9f",
+    "input_hash": "50e786685d73de9c2df722ef1abb85c7f42b3e81a0a7283aeb3fd5ec304ddde7",
     "output_hash": "",
     "source_revision": null,
-    "duration_ms": 273476
+    "duration_ms": 301512
   },
   "statistics": {
     "connected_nets": 29,
     "open_nets": 0,
     "open_net_names": [],
-    "segments": 265,
-    "vias": 27,
-    "wire_length_mm": 550.892385,
+    "segments": 250,
+    "vias": 25,
+    "wire_length_mm": 567.890048,
     "pad_escape_rejections": 0,
     "engine_findings": {
-      "claimed_imported_segments": "265",
-      "claimed_imported_vias": "27"
+      "claimed_imported_segments": "250",
+      "claimed_imported_vias": "25"
     }
   },
   "artifacts": {
@@ -70,7 +70,7 @@
     "drc_report": null
   },
   "validation": {
-    "fabrication_ready": false,
+    "fabrication_ready": true,
     "topology": {
       "missing_footprints": [],
       "extra_footprints": [],
@@ -86,27 +86,25 @@
       "open": [],
       "unconnected_pads": [],
       "via_in_pad": [
-        "via at (23.800, 17.300) mm U1.25"
+        "via at (23.400, 19.800) mm U1.25"
       ],
       "undersized_vias": [],
       "undersized_tracks": []
     },
     "kicad_drc": {
       "errors": 0,
-      "unconnected": 2,
-      "warnings": 51
+      "unconnected": 0,
+      "warnings": 54
     },
-    "blocking_reasons": [
-      "kicad-cli pcb drc reported 2 blocking violation(s)"
-    ],
+    "blocking_reasons": [],
     "unavailable_checks": []
   },
   "failure": null,
   "escape": [
     {
       "refdes": "J1",
-      "package": "Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12",
-      "pads": 22,
+      "package": "Connector_USB:USB_C_Receptacle_Amphenol_12401610E4-2A",
+      "pads": 30,
       "pitch_mm": 0.5,
       "gap_mm": 0.2,
       "via_span_mm": 0.687,

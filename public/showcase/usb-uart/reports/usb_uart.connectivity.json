@@ -1,5 +1,5 @@
 {
-  "fabrication_ready": false,
+  "fabrication_ready": true,
   "topology": {
     "missing_footprints": [],
     "extra_footprints": [],
@@ -15,18 +15,16 @@
     "open": [],
     "unconnected_pads": [],
     "via_in_pad": [
-      "via at (23.800, 17.300) mm U1.25"
+      "via at (23.400, 19.800) mm U1.25"
     ],
     "undersized_vias": [],
     "undersized_tracks": []
   },
   "kicad_drc": {
     "errors": 0,
-    "unconnected": 2,
-    "warnings": 51
+    "unconnected": 0,
+    "warnings": 54
   },
-  "blocking_reasons": [
-    "kicad-cli pcb drc reported 2 blocking violation(s)"
-  ],
+  "blocking_reasons": [],
   "unavailable_checks": []
 }

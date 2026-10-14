@@ -83,10 +83,14 @@ for (const b of boards) {
   const synthBuild = (b.checks ?? []).find((c) => c.label === "Synth build");
   if (!synthBuild || !/\b[0-9a-f]{7,40}\b/.test(synthBuild.value)) fail(`${where}: checks need a "Synth build" entry with a commit hash`);
 
-  // A page that says "not fabricated" must not ship a record that says fabrication-ready.
+  // A page that says "not fabricated" must not ship a record that says fabrication-ready
+  // unless the page itself explains what the field means.
   const record = read(join(dir, "reports/usb_uart.routing.json"));
   if (record !== null && /not fabricated/i.test(b.status) && JSON.parse(record).validation?.fabrication_ready !== false) {
-    fail(`${where}: reports/usb_uart.routing.json does not say fabrication_ready is false, but the page says the board is not fabricated`);
+    const gate = (b.checks ?? []).find((c) => c.label === "Release gate")?.value ?? "";
+    if (!/fabrication_ready/.test(gate) || !/not a manufacturing sign-off/i.test(gate)) {
+      fail(`${where}: reports/usb_uart.routing.json says fabrication_ready, the page says the board is not fabricated, and the "Release gate" check does not explain that fabrication_ready is not a manufacturing sign-off`);
+    }
   }
   // The tool commit the reports came from is the one QUALIFICATION.md names, and every report it cites is published.
   const qual = read(join(dir, "QUALIFICATION.md")) ?? "";

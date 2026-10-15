@@ -26,11 +26,11 @@ export interface Board {
 
 const reviewedBy = "Steve Munene";
 // One revision for every published artifact: absmach/synth#103, qualification/class-b/usb-uart/.
-const REVISION = "a4d8188";
+const REVISION = "a965f7f";
 // absmach/synth main as merged into that revision.
-const MAIN_REVISION = "f931fd1";
+const MAIN_REVISION = "50a165c";
 // The Synth main the routing and release reports were produced with, as QUALIFICATION.md records it.
-const REPORT_BUILD_REVISION = "f931fd1";
+const REPORT_BUILD_REVISION = "50a165c";
 
 export const boards: Board[] = [
   {
@@ -90,10 +90,10 @@ export const boards: Board[] = [
       { label: "Fabrication note", value: "One via-in-pad: the U1 exposed-pad ground via at (23.8, 20.1) mm needs filled and capped vias at the fab. Not confirmed with JLCPCB for this board." },
       { label: "Ground return", value: "A ground via sits 0.8 to 1.8 mm from the ground pad of every decoupling and protection part, except D6 (2.6 mm). J1's ground contacts A12 and B1 are 5.8 and 6.3 mm from one. D6 pin 2 and J1 A12 got no via for lack of room and connect through tracks." },
       { label: "Copper", value: "271 track segments, 44 vias (22 of them ground), 582 mm. VBUS is routed at 0.3 mm to fit the connector's 0.3 mm contacts." },
-      { label: "Time to route", value: "332 s, from the route record. Most placements tried with the M3 holes failed: they left nets open, a stray ground-pour piece or DRC errors. The result changes from one placement to the next." },
+      { label: "Time to route", value: "109 s, from the route record. Most placements tried with the M3 holes failed: they left nets open, a stray ground-pour piece or DRC errors. The result changes from one placement to the next." },
       { label: "Router", value: "FreeRouting 2.4.1. Record: reports/usb_uart.routing.json" },
       { label: "Published files", value: `Board, schematic, source and layout files are byte-identical to absmach/synth#103 at commit ${REVISION} (qualification/class-b/usb-uart/). The 3D model, copper-layer SVGs, schematic SVG and the renders are made from that board by KiCad 10.0.7 with the ground pours refilled. The routing and release reports have local paths replaced, so only their hashes in QUALIFICATION.md differ from these files.` },
-      { label: "Synth build", value: `The routing and release reports were produced by a local build of PR #103 merged with Synth main ${REPORT_BUILD_REVISION} plus the not-yet-merged PRs #154 (clearances in the exported project file and the DRC), #162 (outline round mounting holes), #175 (a ground via beside every ground pad) and #176 (no copper under the screw heads). ${REVISION} exports a board byte-identical to the one published here only with those four PRs.` },
+      { label: "Synth build", value: `The routing and release reports were produced by a local build of PR #103 merged with Synth main ${REPORT_BUILD_REVISION}, which already has the tool PRs this board needs: #154 (clearances in the exported project file and the DRC), #162 (outline round mounting holes), #173 (labels next to their part), #175 (a ground via beside every ground pad) and #176 (no copper under the screw heads).` },
     ],
     limits: [
       `Engineering draft, not a completed Class-B qualification. Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}; no signal-integrity, power-integrity or RF expert has signed it off.`,
@@ -104,7 +104,7 @@ export const boards: Board[] = [
       "The manufacturer datasheets of the USB-C connector (Amphenol), the USB ESD and TVS diodes (Nexperia) and the LEDs (Lite-On) were not read (the sites refused every request), so the connector's pinout, ratings and drawing are KiCad's footprint only. The viewer shows the 3D model KiCad ships for it.",
       "J1's oval NPTH hole is 0.95 × 0.65 mm, and JLCPCB states 1.0 mm as the smallest non-plated slot. Whether that applies to this connector hole is not confirmed. The via annular ring is 0.15 mm, JLCPCB's absolute minimum.",
       "The current the CH342F's TXD pins can sink was not checked for the TX LEDs.",
-      "Some reference labels near U1 (C6, D6, D1) still crowd each other on the silkscreen.",
+      "Some reference labels near U1 (D1, D2, D5, D6) still crowd each other on the silkscreen.",
     ],
     source: { file: "usb_uart.synth" },
     schematicAlt:

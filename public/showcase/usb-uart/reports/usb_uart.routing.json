@@ -41,10 +41,10 @@
       "threads": "4",
       "wall_clock_secs": "1200"
     },
-    "input_hash": "ecd75815ea1f04817ff3574c96aa8426b16a50b12de261c617d849aba89e9a86",
+    "input_hash": "aa534473f5e8cb3488d5108d81431c781cd1e36cd37f7c2b44f0fca97fe01359",
     "output_hash": "",
     "source_revision": null,
-    "duration_ms": 332129
+    "duration_ms": 109440
   },
   "statistics": {
     "connected_nets": 29,

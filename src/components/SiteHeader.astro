@@ -1,0 +1,41 @@
+---
+interface Props {
+  docsUrl: string;
+  appUrl: string;
+  links: { href: string; label: string }[];
+}
+
+const { docsUrl, appUrl, links } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<header class="site-header">
+  <div class="header-inner wrap">
+    <a class="brand" href={base} aria-label="Synth home"><img src={`${base}images/synth-logo-monochrome.svg`} alt="Synth" width="114" height="27" /></a>
+    <nav id="primary-nav" class="site-nav" aria-label="Primary navigation">
+      {links.map(({ href, label }) => <a href={href}>{label}</a>)}
+      <a href={docsUrl}>Docs <span aria-hidden="true">↗</span></a>
+    </nav>
+    <a class="button nav-cta" href={appUrl}>Open Synth <span aria-hidden="true">↗</span></a>
+    <button class="menu-toggle" aria-label="Open navigation" aria-controls="primary-nav" aria-expanded="false"><span></span><span></span></button>
+  </div>
+</header>
+
+<script>
+  const menuButton = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const nav = document.querySelector<HTMLElement>(".site-nav");
+  function closeMenu() {
+    menuButton?.setAttribute("aria-expanded", "false");
+    menuButton?.setAttribute("aria-label", "Open navigation");
+    nav?.classList.remove("is-open");
+  }
+  menuButton?.addEventListener("click", () => {
+    const open = menuButton.getAttribute("aria-expanded") !== "true";
+    menuButton.setAttribute("aria-expanded", String(open));
+    menuButton.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+    nav?.classList.toggle("is-open", open);
+  });
+  nav?.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+  document.addEventListener("keydown", event => { if (event.key === "Escape") closeMenu(); });
+  document.addEventListener("click", event => { if (!(event.target as Element).closest(".header-inner")) closeMenu(); });
+</script>

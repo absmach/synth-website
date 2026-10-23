@@ -86,6 +86,7 @@ export const boards: Board[] = [
     checks: [
       { label: "Routing", value: "29 nets connected, 0 open" },
       { label: "KiCad design-rule check", value: "0 errors, 0 unconnected, 45 warnings (silkscreen and library notes), also after a KiCad re-save, run with the project's custom rules (copper to a board edge 0.3 mm, to a hole or an NPTH hole 0.2 mm, from the JLCPCB profile). Report: reports/usb_uart.drc.json" },
+      { label: "Schematic ERC", value: "1 error (VIO power pin not driven, jumper-selected rail), 123 library-link warnings (83 missing symbol-library entries, 40 footprint links). Report: reports/usb_uart.erc.json" },
       { label: "Release gate", value: "Passed: release_ready and fabrication_ready are true in Synth's records. That means Synth's own checks passed (routed, 0 open nets, KiCad DRC clean). It is not a manufacturing sign-off: nothing was fabricated or tested, and the fabrication note below applies. Records: reports/usb_uart.routing.json, reports/release.json" },
       { label: "Fabrication note", value: "One via-in-pad: the U1 exposed-pad ground via at (23.8, 20.1) mm needs filled and capped vias at the fab. Not confirmed with JLCPCB for this board." },
       { label: "Ground return", value: "A ground via sits 0.8 to 1.8 mm from the ground pad of every decoupling and protection part, except D6 (2.6 mm). J1's ground contacts A12 and B1 are 5.8 and 6.3 mm from one. D6 pin 2 and J1 A12 got no via for lack of room and connect through tracks." },
@@ -159,6 +160,7 @@ export const boards: Board[] = [
       { label: "Connectivity report", path: "reports/usb_uart.connectivity.json", note: "Synth's connectivity check, re-derived from the copper" },
       { label: "Route record", path: "reports/usb_uart.routing.json", note: "Synth's routing run: router, settings, nets, segments, vias. Local paths replaced." },
       { label: "Design-rule check", path: "reports/usb_uart.drc.json", note: "KiCad 10 DRC report for the routed board" },
+      { label: "Schematic ERC", path: "reports/usb_uart.erc.json", note: "KiCad 10.0.7 ERC report for the generated schematic" },
       { label: "Qualification matrix", path: "QUALIFICATION.md", note: "What was checked, what was not, and what is open" },
       { label: "File hashes", path: "SHA256SUMS", note: "SHA-256 of every file in this folder except the zip" },
       { label: "Release gate result", path: "reports/release.json", note: "Synth's release gate record. Local paths replaced." },

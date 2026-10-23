@@ -3,6 +3,7 @@ import "../../../styles.css";
 import "../../styles/showcase.css";
 import { boards } from "../../data/showcase";
 import type { Board } from "../../data/showcase";
+import SiteHeader from "../../components/SiteHeader.astro";
 
 export function getStaticPaths() {
   return boards.map((board) => ({ params: { slug: board.slug }, props: { board } }));
@@ -53,18 +54,15 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <div class="header-inner wrap">
-        <a class="brand" href={base} aria-label="Synth home"><img src={`${base}images/synth-logo-monochrome.svg`} alt="Synth" width="114" height="27" /></a>
-        <nav id="primary-nav" class="site-nav" aria-label="Primary navigation">
-          <a href={`${base}#showcase`}>Showcase</a>
-          <a href={`${base}#workspace`}>The experience</a>
-          <a href={`${base}#open-source`}>Open source</a>
-          <a href={docsUrl}>Docs <span aria-hidden="true">↗</span></a>
-        </nav>
-        <a class="button nav-cta" href={appUrl}>Open Synth <span aria-hidden="true">↗</span></a>
-      </div>
-    </header>
+    <SiteHeader
+      docsUrl={docsUrl}
+      appUrl={appUrl}
+      links={[
+        { href: `${base}#showcase`, label: "Showcase" },
+        { href: `${base}#workspace`, label: "The experience" },
+        { href: `${base}#open-source`, label: "Open source" },
+      ]}
+    />
 
     <main id="main">
       <section class="sc-top wrap" aria-labelledby="board-title">

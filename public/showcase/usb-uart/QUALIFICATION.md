@@ -23,7 +23,7 @@ Tool versions used: KiCad 10.0.7, FreeRouting 2.4.1 on OpenJDK 25.0.4.1, Synth `
 
 ## Artifact hashes
 
-`SHA256SUMS` in this folder lists every design artifact (source, sidecars, KiCad files, BOM, 3D renders, copper and schematic pictures, the board STEP, routing and DRC reports). It leaves out `README.md`, `QUALIFICATION.md` and itself. The key ones:
+`SHA256SUMS` in this folder lists every design artifact (source, sidecars, KiCad files, BOM, 3D renders, copper and schematic pictures, the board STEP, routing, ERC and DRC reports). It leaves out the downloadable zip and itself. The key ones:
 
 | Artifact | SHA-256 |
 | --- | --- |
@@ -34,8 +34,9 @@ Tool versions used: KiCad 10.0.7, FreeRouting 2.4.1 on OpenJDK 25.0.4.1, Synth `
 | `kicad/bom.csv` | `5852e79981c28ef46446095c433feff0890cfda97c7a32e97357a0c309aeede8` |
 | `reports/release.json` | `ae7226e15c78f1970be0ca7cd11b34ac013b5bb5692fa4779ac4aa302ced68d0` |
 | `reports/usb_uart.drc.json` | `e0345544c1638e774730cc48a02415436aa1ec854d8418b88b56392819775d45` |
+| `reports/usb_uart.erc.json` | `1bf13eabc1c30d61296d9f420f0eae21b0bc68c618022e87ee2ffdb1e0c1dd48` |
 
-`reports/` holds the files as captured, so they contain the absolute paths of the machine that produced them, and `engine_version` in `release.json` is a jar path.
+`reports/` holds the files as captured, with machine paths replaced by `<run>`. The hashes in `SHA256SUMS` are of the published files.
 
 Datasheet files read for this revision (not committed, so the figures taken from them are not checkable from this repository): Bourns CDSOT23-SM712 REV. 06/24, `75c1a765dbea8b5d7e57611b8787ce6b2856e57eef387b334bc0a894d91a19d2` (VWM 12 V / 7 V, clamp 19 V at 1 A, 26 V at 17 A, 400 W / 17 A); TI THVD1450 SLLSEY3E (May 2018, revised May 2019) (bus abs max +/-18 V in 7.1, surge circuit in fig. 37 and table 7). The JLCPCB statement in B8 comes from JLCPCB's own pages as read on 2026-10-12.
 
@@ -48,7 +49,7 @@ Datasheet files read for this revision (not committed, so the figures taken from
 | A3 | No KiCad DRC rule violation on the routed board | `kicad-cli pcb drc --refill-zones` on the raw router file, `reports/usb_uart.drc.json` | 0 errors, 0 unconnected, 45 warnings (40 library links, 5 silk over copper; no label overlap and no label clipped by the board edge), run with the project's `usb_uart.kicad_dru` (copper to a board edge 0.3 mm, to a hole or an NPTH hole 0.2 mm, from the JLCPCB profile, instead of KiCad's 0.5 and 0.25 mm defaults; see B9). After a KiCad re-save (`--save-board`) the same copper also shows 0 errors with PR #154's project file; see B9 |
 | A4 | The RS-485 line is protected and the terminator is switchable | `E-SYNTH-ESD-001` and `E-SYNTH-RS485-001` (PR #140) | Revision A: 2 + 1 warnings. Revision B: none. **Weak evidence:** both rules follow only the same net, and R_A/R_B split the nets, so on revision B the rules cannot see the bus side. This was confirmed by reading the schematic only |
 | A5 | The package passes Synth's release gate | `synth export-kicad`, `reports/release.json` | **Yes**, with the USB protection cluster 3.05 mm to the right and the rows below J1 shifted 2.8 mm. Before the ground via step the earlier layout failed the gate: KiCad reported 2 unconnected ground-pour items, the ground pins of C4 and D1 in top-layer pour pieces with no via to the ground planes (a real missing ground connection, which Synth's own connectivity check did not see because it counts a pad on a pour as connected). The router's stitching step printed `pour piece on F.Cu still cut off from its net` for both. Other placements left nets open or timed out; the aligned header row only routed after J4 was turned 180 degrees and D8 moved beside it. A passed gate is not a qualification |
-| A6 | Schematic electrical rules | `kicad-cli sch erc` | 1 error (`power_pin_not_driven` on the VIO symbol, jumper-selected rail, also on revision A), 123 warnings |
+| A6 | Schematic electrical rules | `kicad-cli sch erc` | 1 error (`power_pin_not_driven` on the VIO symbol, jumper-selected rail, also on revision A), 123 warnings, all library-link noise: 83 missing symbol-library entries and 40 footprint links. The JSON report is published at `reports/usb_uart.erc.json` (KiCad 10.0.7) |
 | A7 | Via-in-pad sites are found and recorded | Synth connectivity `via_in_pad`; PR #139 fabrication note | One site: U1 exposed pad (GND, at 23.8, 20.1). The note is written for a routed board and is in this board's `release.json` |
 | A8 | The four parts added or changed here match their KiCad footprints | `synth registry qualify` | `header_1x2`, `cdsot23_sm712`, `thvd1450d` and `usb_c_receptacle_amphenol_12401610e4_2a` have no pin-to-pad, mirrored-footprint or dimension finding. Each has one blocking finding, `E-SYNTH-QUAL-008` (no reviewer or provenance); the Amphenol part also has `E-SYNTH-QUAL-009` (no datasheet URL: the manufacturer's site refused every request, so its datasheet was not read). Like every part that command listed in my run (all of them blocked), they stay `blocked` until a reviewer is named, and none has one |
 

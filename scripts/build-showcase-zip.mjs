@@ -21,8 +21,9 @@ const u32 = (n) => Buffer.from([n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >
 for (const slug of readdirSync(showcase, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name)) {
   const dir = join(showcase, slug);
   const zipName = `${slug}-files.zip`;
+  // KiCad writes this local editor state when the board is opened; it is not a published artifact.
   const files = walk(dir)
-    .filter((f) => f !== zipName)
+    .filter((f) => f !== zipName && !f.endsWith(".kicad_prl"))
     .map((f) => [`${slug}/${f}`, readFileSync(join(dir, f))]);
   files.push([`${slug}/LICENSE`, readFileSync(join(root, "LICENSE"))]);
 

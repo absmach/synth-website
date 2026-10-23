@@ -20,6 +20,7 @@ const read = (p) => (existsSync(p) ? readFileSync(p, "utf8") : null);
 
 const home = read(join(root, "dist/index.html"));
 if (home === null) fail("dist/index.html missing: run `pnpm build` first");
+else if (!home.includes('class="menu-toggle"') || !home.includes('aria-controls="primary-nav"')) fail("home page has no mobile menu toggle");
 
 for (const b of boards) {
   const where = `board "${b.slug}"`;
@@ -74,7 +75,8 @@ for (const b of boards) {
       at += 46 + len + zip.readUInt16LE(at + 30) + zip.readUInt16LE(at + 32);
     }
     const walk = (d, pre = "") => readdirSync(join(d), { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name), `${pre}${e.name}/`) : [`${pre}${e.name}`]));
-    const expected = [...walk(dir).filter((f) => f !== zipName), "LICENSE"].map((f) => `${b.slug}/${f}`);
+    // KiCad writes this local editor state when the board is opened; it is not a published artifact.
+    const expected = [...walk(dir).filter((f) => f !== zipName && !f.endsWith(".kicad_prl")), "LICENSE"].map((f) => `${b.slug}/${f}`);
     const missing = expected.filter((f) => !names.includes(f));
     if (missing.length > 0) fail(`${where}: ${zipName} is missing: ${missing.join(", ")}`);
   }
@@ -114,7 +116,7 @@ for (const b of boards) {
   } else {
     const listed = new Map(sums.split("\n").filter(Boolean).map((l) => [l.slice(66), l.slice(0, 64)]));
     const files = (d, pre = "") => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? files(join(d, e.name), `${pre}${e.name}/`) : [`${pre}${e.name}`]));
-    for (const f of files(dir).filter((f) => f !== "SHA256SUMS" && f !== `${b.slug}-files.zip`)) {
+    for (const f of files(dir).filter((f) => f !== "SHA256SUMS" && f !== `${b.slug}-files.zip` && !f.endsWith(".kicad_prl"))) {
       if (!listed.has(f)) fail(`${where}: SHA256SUMS does not list ${f}`);
       else if (listed.get(f) !== createHash("sha256").update(readFileSync(join(dir, f))).digest("hex")) fail(`${where}: SHA256SUMS has the wrong hash for ${f}`);
     }
@@ -136,6 +138,7 @@ for (const b of boards) {
       if (!page.includes(`id="${id}"`)) fail(`${where}: page has no section id="${id}"`);
     }
     if (!page.includes("data-board-viewer")) fail(`${where}: page has no 3D viewer hook`);
+    if (!page.includes('class="menu-toggle"') || !page.includes('aria-controls="primary-nav"')) fail(`${where}: page has no mobile menu toggle`);
     if (!/data-spin[^>]*aria-pressed="true"/.test(page)) fail(`${where}: Auto-rotate is not on by default`);
     if (!/data-view="angled"[^>]*aria-pressed="true"/.test(page)) fail(`${where}: Angled view is not selected by default`);
     if (!page.includes(b.assets?.glb ?? "\0")) fail(`${where}: page does not reference the GLB`);

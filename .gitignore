@@ -3,3 +3,4 @@ dist/
 .astro/
 .DS_Store
 public/showcase/*/*-files.zip
+public/showcase/*/kicad/*.kicad_prl

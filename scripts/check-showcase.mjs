@@ -28,7 +28,7 @@ for (const b of boards) {
     if (!text(b[k])) fail(`${where}: "${k}" is empty`);
   }
   if (!text(b.reviewedBy)) fail(`${where}: "reviewedBy" is empty`);
-  if (!Array.isArray(b.layers) || b.layers.length !== 4) fail(`${where}: expected 4 copper layers (top, inner 1, inner 2, bottom)`);
+  if (!Array.isArray(b.layers) || ![2, 4].includes(b.layers.length)) fail(`${where}: expected 2 or 4 copper layers`);
   for (const l of b.layers ?? []) {
     for (const k of ["id", "label", "file", "alt", "note"]) if (!text(l[k])) fail(`${where}: layer "${l.id}" has an empty "${k}"`);
   }

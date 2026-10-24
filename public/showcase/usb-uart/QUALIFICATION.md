@@ -3,15 +3,15 @@
 **Status: requires expert review. This is not a completed qualification result.**
 Nothing here was fabricated or powered. Section A lists what Synth or KiCad checked and the evidence. Section B lists what no tool here proves and an SI/PI/RF or manufacturing expert has to sign off. No expert has reviewed this board.
 
-Revision B routes with 0 open nets and passes Synth's release gate (`release_ready: true` in `reports/release.json`, see A5). A passed gate means the tool's checks passed; it is not a qualification.
+Revision A is a two-layer board and routes with 0 open nets; it passes Synth's release gate (`release_ready: true` in `reports/release.json`, see A4). A passed gate means the tool's checks passed; it is not a qualification. The previous revision was four layers, but its In1.Cu and In2.Cu carried no routing (all 255 segments were on F.Cu and B.Cu), so they were removed rather than kept as unused planes.
 
 ## Reproduce
 
-Run from the repository root. Use Synth `main` from 2026-10-15 or later (commit 9c0fc2c or newer). It includes PR #139 (fabrication note), PR #140 (RS-485 checks), PR #144 and #173 (label placement), PR #154 (manufacturer clearances in the project file; without it a KiCad re-save shows 63 clearance errors, see B9), PR #162 (outline round the mounting holes; without it the four M3 holes grow the board by about 7 mm in each direction), PR #175 (a ground via beside every ground pad), PR #176 (copper keepout under the screw heads, with the corner vias moved clear), PR #197 (declared net names in the schematic and the net class rules), PR #198 (via-in-pad against the real pad outline) and PR #200 (pads turn with a rotated footprint; without it D8's lands point the wrong way). All of them are merged. Use an empty `XDG_DATA_HOME` so a user registry cannot shadow parts.
+Run from the repository root. Use Synth `main` 1eac8a1 plus PR #103 at 4ab0eb9. Use an empty `XDG_DATA_HOME` so a user registry cannot shadow parts.
 
 ```
 export XDG_DATA_HOME=$(mktemp -d)
-scripts/setup-routing-engines.sh
+scripts/setup-routing-engines.sh --freerouting-only
 synth validate qualification/class-b/usb-uart/usb_uart.synth
 synth export-kicad qualification/class-b/usb-uart/usb_uart.synth --out <dir> --router free-routing --krt-allow-via-in-pad
 kicad-cli pcb drc --severity-all --refill-zones --format json <dir>/usb_uart.kicad_pcb
@@ -19,55 +19,52 @@ kicad-cli sch erc --severity-all --format json <dir>/usb_uart.kicad_sch
 (cd qualification/class-b/usb-uart && sha256sum -c SHA256SUMS)
 ```
 
-Tool versions used: KiCad 10.0.7, FreeRouting 2.4.1 on OpenJDK 25.0.4.1, Synth `main` 9c0fc2c (includes PR #139, #140, #144, #154, #162, #173, #175, #176, #197, #198 and #200), on 2026-10-15. Routing is not bit-for-bit repeatable across placements: small placement changes gave different results (see A5); the same inputs gave the same board on repeat.
+Tool versions used: KiCad 10.0.7, FreeRouting 2.4.1 on OpenJDK 25.0.4.1, Synth `main` 1eac8a1 plus the export changes in PR #103 at 4ab0eb9, on 2026-10-24. Routing is not bit-for-bit repeatable across placements: J3 at its earlier x 25.56 mm left DTR1 open, and the committed placement moves J3 and J4 1.44 mm right.
 
 ## Artifact hashes
 
-`SHA256SUMS` in this folder lists every design artifact (source, sidecars, KiCad files, BOM, 3D renders, copper and schematic pictures, the board STEP, routing, ERC and DRC reports). It leaves out the downloadable zip and itself. The key ones:
+`SHA256SUMS` in this folder lists every published file except the zip and itself. The key ones:
 
 | Artifact | SHA-256 |
 | --- | --- |
-| `usb_uart.synth` | `b41775b3dee135611e45b8d79d257fb734d0dc58cd08a8e9d1400c4ce0df8b49` |
-| `usb_uart.placement.layout.toml` | `d38408e9d0e080ebdd91577fdf8b47b0fe71a93a8561e5c9f9040a5ed5197230` |
-| `kicad/usb_uart.kicad_pcb` | `0767b69df92a29d1eaba3cfd220e98b656f3b9a0a6d18b9a3a646fc807df7568` |
-| `kicad/usb_uart.kicad_sch` | `0aec67d2f20481c417381eaffe847e2ac378a75a77e2fcc8dea6cdb538acf1e6` |
-| `kicad/bom.csv` | `5852e79981c28ef46446095c433feff0890cfda97c7a32e97357a0c309aeede8` |
-| `reports/release.json` | `ae7226e15c78f1970be0ca7cd11b34ac013b5bb5692fa4779ac4aa302ced68d0` |
-| `reports/usb_uart.drc.json` | `e0345544c1638e774730cc48a02415436aa1ec854d8418b88b56392819775d45` |
-| `reports/usb_uart.erc.json` | `1bf13eabc1c30d61296d9f420f0eae21b0bc68c618022e87ee2ffdb1e0c1dd48` |
+| `usb_uart.synth` | `4872d7cdbfc0f8e401a251a0c6fc0168c30353d014cb4218925bad60191c9c16` |
+| `usb_uart.placement.layout.toml` | `2da76977947d68423f8c0f8eaf33158e1d4f1492cf19feb5458ea32c1e6d12f6` |
+| `kicad/usb_uart.kicad_pcb` | `d9a4465eb42699d54587f513f1c7e37950f20b009dfd8822bec476d8d813482d` |
+| `kicad/usb_uart.kicad_sch` | `9a7a04d2618c3d05bbaf3ec1f291ffb55b817f717025b323ef4c177d9de91354` |
+| `kicad/bom.csv` | `a31eca59db4cebdace543fac91243b759232a423a18428d544bce109c23ec462` |
+| `reports/release.json` | `5626462bd4755a7c45f6c38af790d85d3d5cc3cad034603d81d5c57bae3e3f6f` |
+| `reports/usb_uart.drc.json` | `4267998b9c245a7f4125ac508a150c6cd4ba356a29b8a45729bffb9c54429e03` |
+| `reports/usb_uart.erc.json` | `682b6d986cdf1e966be344ce0b9c48667cf746b2417326e2cb9744f2dbf584a4` |
 
-`reports/` holds the files as captured, with machine paths replaced by `<run>`. The hashes in `SHA256SUMS` are of the published files.
-
-Datasheet files read for this revision (not committed, so the figures taken from them are not checkable from this repository): Bourns CDSOT23-SM712 REV. 06/24, `75c1a765dbea8b5d7e57611b8787ce6b2856e57eef387b334bc0a894d91a19d2` (VWM 12 V / 7 V, clamp 19 V at 1 A, 26 V at 17 A, 400 W / 17 A); TI THVD1450 SLLSEY3E (May 2018, revised May 2019) (bus abs max +/-18 V in 7.1, surge circuit in fig. 37 and table 7). The JLCPCB statement in B8 comes from JLCPCB's own pages as read on 2026-10-12.
+`reports/` holds the files as captured; artifact paths inside them are relative to the machine that produced them. The hashes in `SHA256SUMS` are of the published files.
 
 ## A. Checked by tools
 
 | # | Claim | Evidence | Result |
 | --- | --- | --- | --- |
-| A1 | The source parses, resolves and lowers | `synth validate` | No errors. Warnings only (the `E-` ones are also severity warning): E-SYNTH-POWER-004 x3, W-SYNTH-ANOMALY-001, W-SYNTH-IMPEDANCE-001, W-SYNTH-SUPPLY-002 x9, W-SYNTH-PART-UNVERIFIED x11 |
-| A2 | Every net is connected end to end | Synth connectivity re-derived from copper, `reports/usb_uart.connectivity.json` | 29 nets connected, 0 open, 0 unconnected pads |
-| A3 | No KiCad DRC rule violation on the routed board | `kicad-cli pcb drc --refill-zones` on the raw router file, `reports/usb_uart.drc.json` | 0 errors, 0 unconnected, 45 warnings (40 library links, 5 silk over copper; no label overlap and no label clipped by the board edge), run with the project's `usb_uart.kicad_dru` (copper to a board edge 0.3 mm, to a hole or an NPTH hole 0.2 mm, from the JLCPCB profile, instead of KiCad's 0.5 and 0.25 mm defaults; see B9). After a KiCad re-save (`--save-board`) the same copper also shows 0 errors with PR #154's project file; see B9 |
-| A4 | The RS-485 line is protected and the terminator is switchable | `E-SYNTH-ESD-001` and `E-SYNTH-RS485-001` (PR #140) | Revision A: 2 + 1 warnings. Revision B: none. **Weak evidence:** both rules follow only the same net, and R_A/R_B split the nets, so on revision B the rules cannot see the bus side. This was confirmed by reading the schematic only |
-| A5 | The package passes Synth's release gate | `synth export-kicad`, `reports/release.json` | **Yes**, with the USB protection cluster 3.05 mm to the right and the rows below J1 shifted 2.8 mm. Before the ground via step the earlier layout failed the gate: KiCad reported 2 unconnected ground-pour items, the ground pins of C4 and D1 in top-layer pour pieces with no via to the ground planes (a real missing ground connection, which Synth's own connectivity check did not see because it counts a pad on a pour as connected). The router's stitching step printed `pour piece on F.Cu still cut off from its net` for both. Other placements left nets open or timed out; the aligned header row only routed after J4 was turned 180 degrees and D8 moved beside it. A passed gate is not a qualification |
-| A6 | Schematic electrical rules | `kicad-cli sch erc` | 1 error (`power_pin_not_driven` on the VIO symbol, jumper-selected rail, also on revision A), 123 warnings, all library-link noise: 83 missing symbol-library entries and 40 footprint links. The JSON report is published at `reports/usb_uart.erc.json` (KiCad 10.0.7) |
-| A7 | Via-in-pad sites are found and recorded | Synth connectivity `via_in_pad`; PR #139 fabrication note | One site: U1 exposed pad (GND, at 23.8, 20.1). The note is written for a routed board and is in this board's `release.json` |
-| A8 | The four parts added or changed here match their KiCad footprints | `synth registry qualify` | `header_1x2`, `cdsot23_sm712`, `thvd1450d` and `usb_c_receptacle_amphenol_12401610e4_2a` have no pin-to-pad, mirrored-footprint or dimension finding. Each has one blocking finding, `E-SYNTH-QUAL-008` (no reviewer or provenance); the Amphenol part also has `E-SYNTH-QUAL-009` (no datasheet URL: the manufacturer's site refused every request, so its datasheet was not read). Like every part that command listed in my run (all of them blocked), they stay `blocked` until a reviewer is named, and none has one |
+| A1 | The source parses, resolves and lowers | `synth validate` | No errors. Warnings only: E-SYNTH-POWER-004 x2, E-SYNTH-SCHEM-005 x2, W-SYNTH-ANOMALY-001, W-SYNTH-SUPPLY-002 x8, W-SYNTH-PART-UNVERIFIED x9 |
+| A2 | Every net is connected end to end | Synth connectivity re-derived from copper, `reports/usb_uart.connectivity.json` | 26 nets connected, 0 open, 0 unconnected pads. One via-in-pad is recorded: U1 pin 25 (the exposed pad) |
+| A3 | No KiCad DRC rule violation on the routed board | `kicad-cli pcb drc --severity-all --refill-zones` on the delivered board, `reports/usb_uart.drc.json` | 0 errors, 0 unconnected, 39 warnings: 36 footprint library links, 2 silkscreen over copper, 1 silkscreen overlap. The raw report also lists one F.Cu GND zone against itself as an unconnected item; no two objects are missing a connection, so Synth's gate keeps it as a warning. Run with the project's `usb_uart.kicad_dru` (copper to a board edge 0.3 mm, to a hole or an NPTH hole 0.2 mm, from the JLCPCB profile) |
+| A4 | The package passes Synth's release gate | `synth export-kicad`, `reports/release.json` | **Yes**: `release_ready` and `route_complete` are true, 0 open nets. A passed gate is not a qualification, and no part is reviewed (`reviewer_state` is false for every part) |
+| A5 | Schematic electrical rules | `kicad-cli sch erc`, `reports/usb_uart.erc.json` | 1 error (`power_pin_not_driven` on the VIO symbol, a jumper-selected rail), 119 warnings: 81 symbol-library link issues, 36 footprint links, 1 label on multiple wires, 1 net with multiple names |
+| A6 | Routing is complete | `reports/usb_uart.routing.json` | FreeRouting 2.4.1: 26 nets, 271 track segments (241 F.Cu, 30 B.Cu), 38 through vias, 507.7 mm of copper, 148 s |
+| A7 | The board is two layers | `kicad/usb_uart.kicad_pcb` | `F.Cu` and `B.Cu` only, 1.6 mm thick, a GND pour on both. No inner copper |
 
 ## B. Not proven: needs expert review
 
 | # | Claim | Why it is not proven | Status |
 | --- | --- | --- | --- |
-| B1 | USB D+/D- is a 90 ohm differential pair | Declared (`impedance 90ohm`). Synth gives only a closed-form estimate and says it does not verify inner layers (W-SYNTH-IMPEDANCE-001). The 4-layer stackup and the fab's real stackup are unverified. FreeRouting does not couple the pair. Revision A: width 0.242 mm, closest gap 0.133 mm | Requires expert review |
-| B2 | USB return path and layer transitions | D+ and D- each change layer through 2 vias (revision A: 2 on D-). The release gate's signal-integrity pass (`signal_integrity` in `reports/release.json`, 0 blocking, 24 warnings) reports 22 times `W-SYNTH-DRC-016`: a layer change with no ground return via within 0.64 mm. It names USB_DP (2), CC1 (2), CC2 (2), V3 (3) and the UART and LED nets MODEM_IDLE, CTS0_LOW, RXD0, RXD1, RXD1_MCU, DTR1, CTS1 and LED_TX1. USB_DN is not named. It also reports two parallel runs (`W-SYNTH-DRC-013`): CTS1_MCU and TXD0 for 5.8 mm at 0.176 mm, and RS485_A_BUS beside +3V3 for 4.2 mm at 0.143 mm. Nobody has judged whether these matter at these speeds | Requires expert review |
-| B3 | USB coupling and skew | Revision B: D+ 20.34 mm (2 vias), D- 20.16 mm (2 vias); per connector contact the path to the CH342F is A6 14.55 / A7 18.58 mm (skew 4.0 mm) and B6 18.88 / B7 19.28 mm (skew 0.4 mm), centre-line length from the board file. The pair is not coupled, left as the router produced it. The same pass reports one `W-SYNTH-DRC-013`: CTS1_MCU and TXD0 run parallel for 5.8 mm on F.Cu, 0.176 mm apart (crosstalk risk), which is not the USB pair; the chip is full speed (12 Mb/s). Gap and coupled length not re-measured (revision A: 1.40 mm skew, 12.6 mm of D+ within 0.5 mm of D-). No simulation | Requires expert review |
-| B4 | RS-485 surge protection (IEC 61000-4-5) | Topology follows TI's 1 kV circuit (SLLSEY3E fig. 37): 10 ohm series, TVS on the bus side. R_A and R_B are generic 0603; TI lists pulse-proof parts. THVD1450 bus abs max is +/-18 V and the SM712 clamps at 19 V (1 A) to 26 V (17 A), so the series resistors matter. Not surge-tested, no expert approval | Requires expert review |
-| B5 | RS-485 common-mode range, bias and fail-safe | Relies on the THVD1450's own fail-safe (per SLLSEY3E). No bias network, no common-mode choke. SM712 stand-off is 12 V / 7 V, matching the +12 / -7 V range, from the Bourns datasheet only | Requires expert review |
-| B6 | RS-485 termination | Selectable through J_TERM. With no jumper the bus is unterminated. Correct jumper use depends on where the board sits on the bus. Bus-side layout and stub lengths were not analysed | Requires expert review |
-| B7 | Power integrity | LDO, VBUS and VIO rails, decoupling placement and loop areas were not analysed. Ground vias now sit 0.8 to 1.8 mm from the ground pads of the decoupling and protection parts (D6 2.6 mm; J1 contacts A12 and B1 5.8 and 6.3 mm), measured pad centre to via centre, but the loop areas are not calculated. The via annular ring is 0.15 mm, JLCPCB's absolute minimum; 0.2 mm is the recommended value. No VBUS bulk capacitor, fuse, reverse or inrush protection | Requires expert review |
-| B8 | Via-in-pad fabrication | The U1 exposed-pad via (0.6 mm pad / 0.3 mm drill) needs a filled and capped via. JLCPCB lists it as a paid option on 4-layer boards. The order must ask for it. **Acceptance by the manufacturer is not confirmed for this board**. J1's oval NPTH hole is 0.95 x 0.65 mm and JLCPCB states 1.0 mm as the minimum non-plated slot; also unconfirmed | Requires manufacturer confirmation |
-| B9 | Clearance at the 0.5 mm-pitch J1 pads | The router works to 0.127 mm, the JLCPCB minimum. The 63 errors a KiCad re-save used to show (59 on revision A) came from the project file giving net classes KiCad's 0.2 mm default (PR #154); with 0.127 mm the re-saved board has none. The J1 connector's NPTH holes sit 0.30 to 0.33 mm from its pads and the nearest track is 0.41 mm from the oval hole and 1.63 mm from the round one; the custom DRC rules hold copper to an NPTH hole at JLCPCB's 0.2 mm (a board edge stays at 0.3 mm), not KiCad's 0.5 / 0.25 mm defaults. Whether 0.127 mm clearance and 0.2 mm to the NPTH are acceptable for this order is for the fab and a reviewer to confirm | Requires review |
-| B10 | Thermal and EMC | Not analysed | Requires expert review |
+| B1 | USB D+/D- is a controlled-impedance pair | No impedance target is declared, and none can be met: at 1.6 mm on two layers a 90 ohm differential pair needs about 1.18 mm traces. The pair is routed at 0.242 mm and is not coupled | Requires expert review |
+| B2 | USB return path and layer transitions | With no inner planes, the return path is the F.Cu/B.Cu ground pour. The signal-integrity pass (`signal_integrity` in `reports/release.json`, 0 blocking, 15 warnings) reports 15 layer changes with no ground return via within 1.53 mm, on CC2 (2), MODEM_IDLE (2), CTS1 (2), RXD0 (2), +3V3 (2), RXD1, RXD1_MCU, DTR1, LED_TX1 and VBUS. It does not name USB_DP or USB_DN. Nobody has judged whether these matter at these speeds | Requires expert review |
+| B3 | USB coupling and skew | The pair is left as the router produced it: not coupled, no length or skew measurement. The chip is full speed (12 Mb/s) | Requires expert review |
+| B4 | RS-485 surge protection (IEC 61000-4-5) | There is no external TVS on A or B and no series pulse-proof resistor; only the THVD1450's on-chip +/-18 kV IEC contact ESD protects the bus. TI's 1 kV circuit (SLLSEY3E figure 37) is not built | Requires expert review |
+| B5 | RS-485 common-mode range, bias and fail-safe | Relies on the THVD1450's own fail-safe. No bias network, no common-mode choke | Requires expert review |
+| B6 | RS-485 termination | R_TERM (120 ohm 1 %) is permanently across A and B. Every node on the bus is terminated whether or not it is the end node; the registry has no 2-pin header for a jumper | Requires expert review |
+| B7 | Power integrity | LDO, VBUS and VIO rails, decoupling placement and loop areas were not analysed. No VBUS bulk capacitor, fuse, reverse or inrush protection | Requires expert review |
+| B8 | Via-in-pad fabrication | The U1 exposed-pad via (0.6 mm pad / 0.3 mm drill, at 23.8, 17.2 mm) needs a filled and capped via. JLCPCB offers it as a paid option, but has not been asked about this board | Requires manufacturer confirmation |
+| B9 | Clearance at the 0.5 mm-pitch J1 and U1 pads | The router works to 0.127 mm, the JLCPCB minimum. FreeRouting's escape analysis says neither a fabrication-floor via nor a minimum track fits between adjacent pads on either part and suggests 4 layers. The route completes on two layers with one via-in-pad. Whether 0.127 mm clearance is acceptable for this order is for the fab and a reviewer to confirm | Requires review |
+| B10 | Thermal, EMC and the two-layer stackup | Not analysed. No declared stackup; the exporter writes the 1.6 mm default | Requires expert review |
 | B11 | Function on real hardware | Nothing was powered, programmed or measured | Not done |
-| B12 | Datasheet and part currency | The Amphenol 12401610E4#2A datasheet, the Nexperia PRTR5V0U2X and PTVS6V0S1UR datasheets and the Lite-On LED datasheet were not read by the tool or by me (amphenol-cs.com and Nexperia returned 403; the maintainer is fetching them), so its pinout, ratings and mechanical drawing are KiCad's footprint only; distributor listings give 5 A and 100 V and disagree between sites. CH342F V1E is the newest sheet found; the exposed pad is 2.6 mm in the KiCad footprint and 2.4 mm in the supplier drawing; LCSC numbers and stock were not checked | Not done |
+| B12 | Datasheet and part currency | The J1 connector datasheet was not read, so its pinout and ratings are the KiCad footprint only. The Lite-On LED numbers are second-hand. CH342F V1E is the newest sheet found; its exposed pad is 2.6 mm in the KiCad footprint and 2.4 mm in the supplier drawing. LCSC numbers, stock and JLCPCB assembly were not checked | Not done |
 
-Rows A4 and B1-B10 are the ones that decide whether this board meets a Class B bar (issue #38 treats missing SI/PI/RF evidence as a failure). They are open.
+Rows B1-B10 are the ones that decide whether this board meets a Class-B bar (issue #38 treats missing SI/PI/RF evidence as a failure). They are open.

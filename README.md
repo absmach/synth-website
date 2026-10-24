@@ -81,7 +81,7 @@ exclusive to Synth.
 
 The homepage Showcase section and the pages under `/showcase/<slug>/` come from
 `src/data/showcase.ts`. Each board has a card on the homepage and a page with a
-three.js viewer, the schematic and the four copper layers, the prompt, model and MCP
+three.js viewer, the schematic and the copper layers, the prompt, model and MCP
 tools, the checks and limits, and links to the source and KiCad files.
 
 To add a board:
@@ -90,7 +90,7 @@ To add a board:
    --subst-models --include-tracks --include-pads --include-zones
    --include-soldermask`), a 3D render
    PNG, schematic and one SVG per copper layer, the `.synth` source, the KiCad project
-   files and `brief.txt`.
+   files and, if you have one, the original brief as `brief.txt`.
 2. Add an entry to `src/data/showcase.ts`. Every number on the page must come
    from a file or a measured run, and `limits` must state what is not verified.
 3. Run `pnpm build && pnpm check:showcase`. The check fails if a listed file is

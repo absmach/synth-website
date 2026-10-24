@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-10-15T18:29:20",
+    "date": "2026-10-24T05:26:56",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -26,54 +26,79 @@
     ],
     "included_severities": [
         "error",
-        "warning"
+        "warning",
+        "exclusion"
     ],
     "kicad_version": "10.0.7",
     "schematic_parity": [],
-    "source": "usb_uart.freerouting.kicad_pcb",
-    "unconnected_items": [],
+    "source": "usb_uart.kicad_pcb",
+    "unconnected_items": [
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Zone [GND] on F.Cu, priority 1",
+                    "pos": {
+                        "x": 2.05,
+                        "y": -0.06
+                    },
+                    "uuid": "12b020d9-7a4d-5d7b-a3c0-c57ca7bbb9ec"
+                },
+                {
+                    "description": "Zone [GND] on F.Cu, priority 1",
+                    "pos": {
+                        "x": 2.05,
+                        "y": -0.06
+                    },
+                    "uuid": "12b020d9-7a4d-5d7b-a3c0-c57ca7bbb9ec"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        }
+    ],
     "violations": [
         {
-            "description": "Silkscreen clipped by solder mask",
+            "description": "Silkscreen clearance",
             "items": [
                 {
-                    "description": "Reference field of D6",
-                    "pos": {
-                        "x": 22.38,
-                        "y": 20.5
-                    },
-                    "uuid": "74315db6-16c0-5e48-81da-314013c442a5"
-                },
-                {
-                    "description": "Pad 5 [VIO] of U1 on F.Cu",
-                    "pos": {
-                        "x": 21.8625,
-                        "y": 20.85
-                    },
-                    "uuid": "be7f1a82-0175-5d22-b23c-8547d8350211"
-                }
-            ],
-            "severity": "warning",
-            "type": "silk_over_copper"
-        },
-        {
-            "description": "Silkscreen clipped by solder mask",
-            "items": [
-                {
-                    "description": "Reference field of D6",
-                    "pos": {
-                        "x": 22.38,
-                        "y": 20.5
-                    },
-                    "uuid": "74315db6-16c0-5e48-81da-314013c442a5"
-                },
-                {
-                    "description": "Pad 25 [GND] of U1 on F.Cu",
+                    "description": "Reference field of U1",
                     "pos": {
                         "x": 23.8,
-                        "y": 20.1
+                        "y": 11.8
                     },
-                    "uuid": "074ccd6c-6356-5f34-b486-eaa6687f9975"
+                    "uuid": "29a69983-68ae-5bc2-b641-e65adffd801c"
+                },
+                {
+                    "description": "Segment of D6 on F.Silkscreen",
+                    "pos": {
+                        "x": 18.38,
+                        "y": 9.69
+                    },
+                    "uuid": "6dfd3c75-832a-4bd1-b2dc-9e00e376c9f2"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of U1",
+                    "pos": {
+                        "x": 23.8,
+                        "y": 11.8
+                    },
+                    "uuid": "29a69983-68ae-5bc2-b641-e65adffd801c"
+                },
+                {
+                    "description": "Pad 1 [GND] of D1 on F.Cu",
+                    "pos": {
+                        "x": 23.23,
+                        "y": 12.05
+                    },
+                    "uuid": "f6ee98b5-4773-4eeb-a825-33c1705abace"
                 }
             ],
             "severity": "warning",
@@ -83,70 +108,84 @@
             "description": "Silkscreen clipped by solder mask",
             "items": [
                 {
-                    "description": "Reference field of D6",
+                    "description": "Reference field of D7",
                     "pos": {
-                        "x": 22.38,
-                        "y": 20.5
+                        "x": 37.8,
+                        "y": 25.8
                     },
-                    "uuid": "74315db6-16c0-5e48-81da-314013c442a5"
+                    "uuid": "8743c473-6449-5e5b-9a73-e1bbb1bb5d89"
                 },
                 {
-                    "description": "Pad 4 [USB_DN] of U1 on F.Cu",
+                    "description": "Pad 1 [TXD1] of R7 on F.Cu",
                     "pos": {
-                        "x": 21.8625,
-                        "y": 20.35
+                        "x": 31.575,
+                        "y": 25.8
                     },
-                    "uuid": "5f817798-bc2d-5e33-8439-2165dc8aa11a"
+                    "uuid": "00ee373c-0f3b-5dec-85b0-6c9e889c2160"
                 }
             ],
             "severity": "warning",
             "type": "silk_over_copper"
         },
         {
-            "description": "Silkscreen clipped by solder mask",
+            "description": "The current configuration does not include the footprint library 'MountingHole'",
             "items": [
                 {
-                    "description": "Reference field of D6",
+                    "description": "Footprint H1",
                     "pos": {
-                        "x": 22.38,
-                        "y": 20.5
+                        "x": 5.5,
+                        "y": 3.0
                     },
-                    "uuid": "74315db6-16c0-5e48-81da-314013c442a5"
-                },
-                {
-                    "description": "Pad 3 [USB_DP] of U1 on F.Cu",
-                    "pos": {
-                        "x": 21.8625,
-                        "y": 19.85
-                    },
-                    "uuid": "ec8a4313-f97b-532c-8d98-a5d3561c32fe"
+                    "uuid": "0068c6ae-2d1f-57f1-aa82-8ceba8355cbf"
                 }
             ],
             "severity": "warning",
-            "type": "silk_over_copper"
+            "type": "lib_footprint_issues"
         },
         {
-            "description": "Silkscreen clipped by solder mask",
+            "description": "The current configuration does not include the footprint library 'MountingHole'",
             "items": [
                 {
-                    "description": "Reference field of D6",
+                    "description": "Footprint H2",
                     "pos": {
-                        "x": 22.38,
-                        "y": 20.5
+                        "x": 39.6,
+                        "y": 3.0
                     },
-                    "uuid": "74315db6-16c0-5e48-81da-314013c442a5"
-                },
-                {
-                    "description": "Pad 6 [V3] of U1 on F.Cu",
-                    "pos": {
-                        "x": 21.8625,
-                        "y": 21.35
-                    },
-                    "uuid": "84b7c311-a6dd-5c90-937c-ab1b997c3dee"
+                    "uuid": "d18aa47e-5ee4-5175-82b0-8b72eec69763"
                 }
             ],
             "severity": "warning",
-            "type": "silk_over_copper"
+            "type": "lib_footprint_issues"
+        },
+        {
+            "description": "The current configuration does not include the footprint library 'MountingHole'",
+            "items": [
+                {
+                    "description": "Footprint H3",
+                    "pos": {
+                        "x": 5.5,
+                        "y": 21.0
+                    },
+                    "uuid": "2b63727c-cf44-583c-a253-b5fba0ac3207"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_issues"
+        },
+        {
+            "description": "The current configuration does not include the footprint library 'MountingHole'",
+            "items": [
+                {
+                    "description": "Footprint H4",
+                    "pos": {
+                        "x": 39.6,
+                        "y": 21.0
+                    },
+                    "uuid": "4257ac06-c40a-566e-9c92-b46185af293c"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_issues"
         },
         {
             "description": "The current configuration does not include the footprint library 'Connector_USB'",
@@ -154,8 +193,8 @@
                 {
                     "description": "Footprint J1",
                     "pos": {
-                        "x": 25.25,
-                        "y": 5.73
+                        "x": 22.0,
+                        "y": 3.59
                     },
                     "uuid": "9295cb59-62ea-56d0-9103-7b94ba4e379a"
                 }
@@ -169,8 +208,8 @@
                 {
                     "description": "Footprint R1",
                     "pos": {
-                        "x": 30.95,
-                        "y": 14.75
+                        "x": 34.0,
+                        "y": 8.5
                     },
                     "uuid": "437ce98f-85e9-5268-942c-1952dbb3c528"
                 }
@@ -184,8 +223,8 @@
                 {
                     "description": "Footprint R2",
                     "pos": {
-                        "x": 16.65,
-                        "y": 14.75
+                        "x": 10.0,
+                        "y": 8.5
                     },
                     "uuid": "5be097df-bbd3-56b5-9fc9-fa2e4235c8fb"
                 }
@@ -199,8 +238,8 @@
                 {
                     "description": "Footprint D1",
                     "pos": {
-                        "x": 25.28,
-                        "y": 14.1
+                        "x": 22.23,
+                        "y": 11.3
                     },
                     "uuid": "a3d60053-28d2-5cd5-85df-300d92010734"
                 }
@@ -214,8 +253,8 @@
                 {
                     "description": "Footprint D2",
                     "pos": {
-                        "x": 19.98,
-                        "y": 14.75
+                        "x": 16.93,
+                        "y": 11.95
                     },
                     "uuid": "74fda175-a97b-59ca-a521-2d933c99ed0c"
                 }
@@ -229,8 +268,8 @@
                 {
                     "description": "Footprint D5",
                     "pos": {
-                        "x": 28.18,
-                        "y": 14.75
+                        "x": 25.13,
+                        "y": 11.95
                     },
                     "uuid": "35fa54d1-9d74-501c-a9e1-ac8df2b3ff5c"
                 }
@@ -244,8 +283,8 @@
                 {
                     "description": "Footprint D6",
                     "pos": {
-                        "x": 22.38,
-                        "y": 14.75
+                        "x": 19.33,
+                        "y": 11.95
                     },
                     "uuid": "44f4eb78-c347-5a76-98c5-4c8d200043b4"
                 }
@@ -260,7 +299,7 @@
                     "description": "Footprint U2",
                     "pos": {
                         "x": 9.6,
-                        "y": 20.1
+                        "y": 17.3
                     },
                     "uuid": "cb95ac94-531a-5e06-9cfc-fd9aa123a914"
                 }
@@ -275,7 +314,7 @@
                     "description": "Footprint C2",
                     "pos": {
                         "x": 5.58,
-                        "y": 19.15
+                        "y": 16.35
                     },
                     "uuid": "043cbbf0-4cf8-5383-a3dd-1941bcb6b8dc"
                 }
@@ -290,7 +329,7 @@
                     "description": "Footprint C3",
                     "pos": {
                         "x": 13.62,
-                        "y": 19.15
+                        "y": 16.35
                     },
                     "uuid": "66e066d1-b267-52b0-9b3c-0992eac21a8c"
                 }
@@ -305,7 +344,7 @@
                     "description": "Footprint U1",
                     "pos": {
                         "x": 23.8,
-                        "y": 20.1
+                        "y": 17.3
                     },
                     "uuid": "1632d71f-8e88-564a-a507-40c64f3d28de"
                 }
@@ -319,8 +358,8 @@
                 {
                     "description": "Footprint C4",
                     "pos": {
-                        "x": 21.6,
-                        "y": 24.67
+                        "x": 22.55,
+                        "y": 21.87
                     },
                     "uuid": "241a5653-2458-5269-b5b7-d51fbf4f0e49"
                 }
@@ -335,7 +374,7 @@
                     "description": "Footprint C5",
                     "pos": {
                         "x": 19.23,
-                        "y": 22.5
+                        "y": 19.7
                     },
                     "uuid": "33463842-fbb8-563a-9311-4efc6cb316f9"
                 }
@@ -350,7 +389,7 @@
                     "description": "Footprint C6",
                     "pos": {
                         "x": 19.23,
-                        "y": 20.85
+                        "y": 18.05
                     },
                     "uuid": "9d90c5fd-a5a7-5f07-af0e-135077734973"
                 }
@@ -365,7 +404,7 @@
                     "description": "Footprint R8",
                     "pos": {
                         "x": 6.0,
-                        "y": 28.4
+                        "y": 25.6
                     },
                     "uuid": "273855f8-0a0f-5096-aa86-35837150a26b"
                 }
@@ -379,8 +418,8 @@
                 {
                     "description": "Footprint R9",
                     "pos": {
-                        "x": 9.4,
-                        "y": 28.4
+                        "x": 9.8,
+                        "y": 22.6
                     },
                     "uuid": "78768483-d40d-5421-8d5a-7cbfacb6cc09"
                 }
@@ -394,8 +433,8 @@
                 {
                     "description": "Footprint J_VIO",
                     "pos": {
-                        "x": 5.82,
-                        "y": 36.2
+                        "x": 4.82,
+                        "y": 29.9
                     },
                     "uuid": "7a146067-0115-5057-9c62-5291def7e3ce"
                 }
@@ -409,8 +448,8 @@
                 {
                     "description": "Footprint J2",
                     "pos": {
-                        "x": 14.92,
-                        "y": 36.2
+                        "x": 13.92,
+                        "y": 29.9
                     },
                     "uuid": "f61ecd56-f8f6-5164-8aef-e99f66d79f8f"
                 }
@@ -424,8 +463,8 @@
                 {
                     "description": "Footprint J3",
                     "pos": {
-                        "x": 24.02,
-                        "y": 36.2
+                        "x": 24.46,
+                        "y": 29.9
                     },
                     "uuid": "0d88a6d7-21aa-5f09-be1a-e4ef6534ed06"
                 }
@@ -440,7 +479,7 @@
                     "description": "Footprint R5",
                     "pos": {
                         "x": 21.0,
-                        "y": 30.6
+                        "y": 25.8
                     },
                     "uuid": "efc39401-3f5d-540e-b527-ea9008deb1e4"
                 }
@@ -455,7 +494,7 @@
                     "description": "Footprint R6",
                     "pos": {
                         "x": 29.0,
-                        "y": 30.6
+                        "y": 25.8
                     },
                     "uuid": "f1ca2d71-5419-56e8-9f38-ddbf7b7b211c"
                 }
@@ -469,8 +508,8 @@
                 {
                     "description": "Footprint U3",
                     "pos": {
-                        "x": 33.9,
-                        "y": 20.1
+                        "x": 32.4,
+                        "y": 17.3
                     },
                     "uuid": "8fc81003-07eb-5ff3-81eb-7cb71b7f3df9"
                 }
@@ -485,7 +524,7 @@
                     "description": "Footprint R_TNOW",
                     "pos": {
                         "x": 12.8,
-                        "y": 28.4
+                        "y": 23.6
                     },
                     "uuid": "607fb28e-7b9b-5249-a0a1-90375c278db9"
                 }
@@ -500,7 +539,7 @@
                     "description": "Footprint C7",
                     "pos": {
                         "x": 39.57,
-                        "y": 18.2
+                        "y": 15.4
                     },
                     "uuid": "8737c764-a9c3-5206-8ae8-d4819bdeeb81"
                 }
@@ -514,8 +553,8 @@
                 {
                     "description": "Footprint J4",
                     "pos": {
-                        "x": 38.2,
-                        "y": 36.2
+                        "x": 33.56,
+                        "y": 29.9
                     },
                     "uuid": "144e1154-61c9-5d0f-9772-9d1e34f7c328"
                 }
@@ -529,70 +568,10 @@
                 {
                     "description": "Footprint R_TERM",
                     "pos": {
-                        "x": 42.2,
-                        "y": 32.2
+                        "x": 39.4,
+                        "y": 25.8
                     },
                     "uuid": "57dfc0fe-676e-5c5d-b48d-e34345a55c10"
-                }
-            ],
-            "severity": "warning",
-            "type": "lib_footprint_issues"
-        },
-        {
-            "description": "The current configuration does not include the footprint library 'Connector_PinHeader_2.54mm'",
-            "items": [
-                {
-                    "description": "Footprint J_TERM",
-                    "pos": {
-                        "x": 42.125,
-                        "y": 36.2
-                    },
-                    "uuid": "fcda7f54-7ab3-5a92-ab04-9d3630ecd921"
-                }
-            ],
-            "severity": "warning",
-            "type": "lib_footprint_issues"
-        },
-        {
-            "description": "The current configuration does not include the footprint library 'Resistor_SMD'",
-            "items": [
-                {
-                    "description": "Footprint R_A",
-                    "pos": {
-                        "x": 40.6,
-                        "y": 22.5
-                    },
-                    "uuid": "d0934987-34d4-54f3-99bb-4a37087b4ba1"
-                }
-            ],
-            "severity": "warning",
-            "type": "lib_footprint_issues"
-        },
-        {
-            "description": "The current configuration does not include the footprint library 'Resistor_SMD'",
-            "items": [
-                {
-                    "description": "Footprint R_B",
-                    "pos": {
-                        "x": 40.6,
-                        "y": 20.7
-                    },
-                    "uuid": "6ee83d1e-e164-532f-a5ea-62a95b8c0e93"
-                }
-            ],
-            "severity": "warning",
-            "type": "lib_footprint_issues"
-        },
-        {
-            "description": "The current configuration does not include the footprint library 'Package_TO_SOT_SMD'",
-            "items": [
-                {
-                    "description": "Footprint D8",
-                    "pos": {
-                        "x": 38.6,
-                        "y": 32.4
-                    },
-                    "uuid": "be36dd49-abfc-5798-9272-8edf2f335c6e"
                 }
             ],
             "severity": "warning",
@@ -605,7 +584,7 @@
                     "description": "Footprint D3",
                     "pos": {
                         "x": 9.4,
-                        "y": 30.6
+                        "y": 25.8
                     },
                     "uuid": "29394456-cad3-5fc6-bff7-6daec1b9d9fe"
                 }
@@ -619,8 +598,8 @@
                 {
                     "description": "Footprint R3",
                     "pos": {
-                        "x": 6.0,
-                        "y": 30.6
+                        "x": 14.5,
+                        "y": 25.8
                     },
                     "uuid": "e1405905-37a6-5772-8b00-19560abc8069"
                 }
@@ -635,7 +614,7 @@
                     "description": "Footprint D4",
                     "pos": {
                         "x": 35.8,
-                        "y": 28.4
+                        "y": 23.6
                     },
                     "uuid": "51c176a9-9a04-5f78-9ba6-50cce70e5401"
                 }
@@ -650,7 +629,7 @@
                     "description": "Footprint R4",
                     "pos": {
                         "x": 32.4,
-                        "y": 28.4
+                        "y": 23.6
                     },
                     "uuid": "31994ba8-8484-523a-9a2e-e50480040900"
                 }
@@ -664,8 +643,8 @@
                 {
                     "description": "Footprint D7",
                     "pos": {
-                        "x": 34.3,
-                        "y": 32.1
+                        "x": 35.8,
+                        "y": 25.8
                     },
                     "uuid": "b523d510-9e31-5b44-b630-8c4fca730e38"
                 }
@@ -680,69 +659,9 @@
                     "description": "Footprint R7",
                     "pos": {
                         "x": 32.4,
-                        "y": 30.6
+                        "y": 25.8
                     },
                     "uuid": "9c7486e3-65ae-5f82-a37b-db8ee525e76f"
-                }
-            ],
-            "severity": "warning",
-            "type": "lib_footprint_issues"
-        },
-        {
-            "description": "The current configuration does not include the footprint library 'MountingHole'",
-            "items": [
-                {
-                    "description": "Footprint H1",
-                    "pos": {
-                        "x": 3.5,
-                        "y": 3.45
-                    },
-                    "uuid": "0068c6ae-2d1f-57f1-aa82-8ceba8355cbf"
-                }
-            ],
-            "severity": "warning",
-            "type": "lib_footprint_issues"
-        },
-        {
-            "description": "The current configuration does not include the footprint library 'MountingHole'",
-            "items": [
-                {
-                    "description": "Footprint H2",
-                    "pos": {
-                        "x": 47.0,
-                        "y": 3.45
-                    },
-                    "uuid": "d18aa47e-5ee4-5175-82b0-8b72eec69763"
-                }
-            ],
-            "severity": "warning",
-            "type": "lib_footprint_issues"
-        },
-        {
-            "description": "The current configuration does not include the footprint library 'MountingHole'",
-            "items": [
-                {
-                    "description": "Footprint H3",
-                    "pos": {
-                        "x": 3.5,
-                        "y": 23.9
-                    },
-                    "uuid": "2b63727c-cf44-583c-a253-b5fba0ac3207"
-                }
-            ],
-            "severity": "warning",
-            "type": "lib_footprint_issues"
-        },
-        {
-            "description": "The current configuration does not include the footprint library 'MountingHole'",
-            "items": [
-                {
-                    "description": "Footprint H4",
-                    "pos": {
-                        "x": 47.0,
-                        "y": 23.9
-                    },
-                    "uuid": "4257ac06-c40a-566e-9c92-b46185af293c"
                 }
             ],
             "severity": "warning",

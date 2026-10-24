@@ -22,6 +22,7 @@ const onDisk = (name: string) => texts[`../../../public/showcase/${board.slug}/$
 const sourceText = onDisk(board.source.file).trimEnd();
 const sourceLineCount = sourceText.split("\n").length;
 const promptText = onDisk("prompt.md");
+const briefText = onDisk("brief.txt");
 const licenseParagraphs = onDisk("LICENSE-NOTES.md").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 const zipFile = `${board.slug}-files.zip`;
 const lineage = [
@@ -104,7 +105,7 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
             <div class="sc-codebar"><button type="button" class="sc-btn" data-copy data-copy-target="prompt-text">Copy prompt</button><a class="text-link" href={asset("prompt.md")} download>Download prompt.md</a></div>
             <pre id="prompt-text" class="sc-code sc-brief" tabindex="0" aria-label="Prompt text">{promptText}</pre>
           </details>
-          <p><a class="text-link" href={asset("brief.txt")} download>Original agent brief, word for word <span aria-hidden="true">↓</span></a></p>
+          {briefText && <p><a class="text-link" href={asset("brief.txt")} download>Original agent brief, word for word <span aria-hidden="true">↓</span></a></p>}
           <h3>Model and tools</h3>
           <dl class="sc-dl">
             <div><dt>AI model</dt><dd>{board.model}</dd></div>
@@ -123,7 +124,7 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
       </section>
 
       <section id="board" class="sc-section wrap" aria-labelledby="board-sec-title">
-        <div class="sc-side"><h2 id="board-sec-title">The board</h2><p>Schematic, all four copper layers and parts, from the same files.</p></div>
+        <div class="sc-side"><h2 id="board-sec-title">The board</h2><p>Schematic, every copper layer and the parts, from the same files.</p></div>
         <div class="sc-body">
           <figure class="sc-figure sc-figure-wide">
             <img src={asset(board.assets.schematic)} alt={board.schematicAlt} loading="lazy" />

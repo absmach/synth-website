@@ -26,7 +26,7 @@ export interface Board {
 
 const reviewedBy = "Steve Munene";
 // One revision for every published artifact: absmach/synth#103, qualification/class-b/usb-uart/.
-const REVISION = "4ab0eb9";
+const REVISION = "7a0f3b3";
 // absmach/synth main as merged into that revision.
 const MAIN_REVISION = "1eac8a1";
 // The Synth main the routing and release reports were produced with, as QUALIFICATION.md records it.
@@ -78,7 +78,7 @@ export const boards: Board[] = [
       { ref: "D2 D5 D6", name: "Nexperia PTVS6V0S1UR", role: "TVS diodes on VBUS, CC1 and CC2" },
       { ref: "R_TERM", name: "120 Ω resistor", role: "Bus termination, permanently across A and B; there is no jumper" },
       { ref: "U2", name: "TI LP5907", role: "3.3 V low-noise regulator" },
-      { ref: "J1", name: "USB-C receptacle", role: "HRO TYPE-C-31-M-12: power and data in" },
+      { ref: "J1", name: "USB-C receptacle", role: "HRO TYPE-C-31-M-12: power and data in. KiCad's 3D model is not installed, so the viewer shows only its outline" },
       { ref: "H1 to H4", name: "M2.5 mounting holes", role: "Four 2.5 mm holes, two in the top corners and two at the sides" },
       { ref: "J_VIO", name: "3-pin jumper", role: "Picks 3.3 V or 5 V for the serial I/O" },
       { ref: "J2 J3 J4", name: "3-pin headers", role: "TTL serial, flow control and the RS-485 bus" },
@@ -143,8 +143,7 @@ export const boards: Board[] = [
       { label: "KiCad custom rules", path: "kicad/usb_uart.kicad_dru", note: "Copper to a board edge 0.3 mm, to a hole or NPTH hole 0.2 mm, from the manufacturer profile" },
       { label: "Bill of materials", path: "kicad/bom.csv", note: "Reference, value, description" },
       { label: "3D model", path: "usb-uart.glb", note: "Binary glTF, as shown in the viewer" },
-      { label: "3D model (STEP)", path: "usb_uart.step", note: "The whole board as a STEP assembly, with KiCad's model of the connector, for CAD and enclosure work" },
-      { label: "Connectivity report", path: "reports/usb_uart.connectivity.json", note: "Synth's connectivity check, re-derived from the copper" },
+      { label: "3D model (STEP)", path: "usb_uart.step", note: "The board and component models as a STEP assembly, for CAD and enclosure work. The connector has no installed model, so only its pads appear" },
       { label: "Route record", path: "reports/usb_uart.routing.json", note: "Synth's routing run: router, settings, nets, segments, vias" },
       { label: "Design-rule check", path: "reports/usb_uart.drc.json", note: "KiCad 10 DRC report for the routed board" },
       { label: "Schematic ERC", path: "reports/usb_uart.erc.json", note: "KiCad 10.0.7 ERC report for the generated schematic" },

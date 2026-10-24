@@ -7,7 +7,7 @@ Revision A is a two-layer board and routes with 0 open nets; it passes Synth's r
 
 ## Reproduce
 
-Run from the repository root. Use Synth `main` 1eac8a1 plus PR #103 at 4ab0eb9. Use an empty `XDG_DATA_HOME` so a user registry cannot shadow parts.
+Run from the repository root. Use Synth `main` 1eac8a1 plus PR #103 at 7a0f3b3. Use an empty `XDG_DATA_HOME` so a user registry cannot shadow parts.
 
 ```
 export XDG_DATA_HOME=$(mktemp -d)
@@ -19,7 +19,7 @@ kicad-cli sch erc --severity-all --format json <dir>/usb_uart.kicad_sch
 (cd qualification/class-b/usb-uart && sha256sum -c SHA256SUMS)
 ```
 
-Tool versions used: KiCad 10.0.7, FreeRouting 2.4.1 on OpenJDK 25.0.4.1, Synth `main` 1eac8a1 plus the export changes in PR #103 at 4ab0eb9, on 2026-10-24. Routing is not bit-for-bit repeatable across placements: J3 at its earlier x 25.56 mm left DTR1 open, and the committed placement moves J3 and J4 1.44 mm right.
+Tool versions used: KiCad 10.0.7 for the DRC, the ERC and the published SVGs, render, GLB and STEP; `release.json` records `kicad_version` 10.0.5 for the export. FreeRouting 2.4.1 on OpenJDK 25.0.4.1, Synth `main` 1eac8a1 plus the export changes in PR #103 at 7a0f3b3, on 2026-10-24. Routing is not bit-for-bit repeatable across placements: J3 at its earlier x 25.56 mm left DTR1 open, and the committed placement moves J3 and J4 1.44 mm right.
 
 ## Artifact hashes
 
@@ -32,7 +32,7 @@ Tool versions used: KiCad 10.0.7, FreeRouting 2.4.1 on OpenJDK 25.0.4.1, Synth `
 | `kicad/usb_uart.kicad_pcb` | `d9a4465eb42699d54587f513f1c7e37950f20b009dfd8822bec476d8d813482d` |
 | `kicad/usb_uart.kicad_sch` | `9a7a04d2618c3d05bbaf3ec1f291ffb55b817f717025b323ef4c177d9de91354` |
 | `kicad/bom.csv` | `a31eca59db4cebdace543fac91243b759232a423a18428d544bce109c23ec462` |
-| `reports/release.json` | `5626462bd4755a7c45f6c38af790d85d3d5cc3cad034603d81d5c57bae3e3f6f` |
+| `reports/release.json` | `96e6d6f741cd5f676c4438f0d28531248f6eeb08d810bf5e5e3dcf448525f57b` |
 | `reports/usb_uart.drc.json` | `4267998b9c245a7f4125ac508a150c6cd4ba356a29b8a45729bffb9c54429e03` |
 | `reports/usb_uart.erc.json` | `682b6d986cdf1e966be344ce0b9c48667cf746b2417326e2cb9744f2dbf584a4` |
 
@@ -43,9 +43,9 @@ Tool versions used: KiCad 10.0.7, FreeRouting 2.4.1 on OpenJDK 25.0.4.1, Synth `
 | # | Claim | Evidence | Result |
 | --- | --- | --- | --- |
 | A1 | The source parses, resolves and lowers | `synth validate` | No errors. Warnings only: E-SYNTH-POWER-004 x2, E-SYNTH-SCHEM-005 x2, W-SYNTH-ANOMALY-001, W-SYNTH-SUPPLY-002 x8, W-SYNTH-PART-UNVERIFIED x9 |
-| A2 | Every net is connected end to end | Synth connectivity re-derived from copper, `reports/usb_uart.connectivity.json` | 26 nets connected, 0 open, 0 unconnected pads. One via-in-pad is recorded: U1 pin 25 (the exposed pad) |
+| A2 | Every net is connected end to end | Synth connectivity re-derived from copper, in `reports/usb_uart.routing.json` (`validation.connectivity`) | 26 nets connected, 0 open, 0 unconnected pads. One via-in-pad is recorded: U1 pin 25 (the exposed pad). The route record carries no separate connectivity report (`connectivity_report: null`), so this result is the one Synth derived during the route; `synth drc` re-routes and cannot produce a report for this exact board |
 | A3 | No KiCad DRC rule violation on the routed board | `kicad-cli pcb drc --severity-all --refill-zones` on the delivered board, `reports/usb_uart.drc.json` | 0 errors, 0 unconnected, 39 warnings: 36 footprint library links, 2 silkscreen over copper, 1 silkscreen overlap. The raw report also lists one F.Cu GND zone against itself as an unconnected item; no two objects are missing a connection, so Synth's gate keeps it as a warning. Run with the project's `usb_uart.kicad_dru` (copper to a board edge 0.3 mm, to a hole or an NPTH hole 0.2 mm, from the JLCPCB profile) |
-| A4 | The package passes Synth's release gate | `synth export-kicad`, `reports/release.json` | **Yes**: `release_ready` and `route_complete` are true, 0 open nets. A passed gate is not a qualification, and no part is reviewed (`reviewer_state` is false for every part) |
+| A4 | The package passes Synth's release gate | `synth export-kicad`, `reports/release.json` | **Yes**: `release_ready` and `route_complete` are true, 0 open nets, and `fabrication_ready` is true in the routing record. A passed gate is not a qualification |
 | A5 | Schematic electrical rules | `kicad-cli sch erc`, `reports/usb_uart.erc.json` | 1 error (`power_pin_not_driven` on the VIO symbol, a jumper-selected rail), 119 warnings: 81 symbol-library link issues, 36 footprint links, 1 label on multiple wires, 1 net with multiple names |
 | A6 | Routing is complete | `reports/usb_uart.routing.json` | FreeRouting 2.4.1: 26 nets, 271 track segments (241 F.Cu, 30 B.Cu), 38 through vias, 507.7 mm of copper, 148 s |
 | A7 | The board is two layers | `kicad/usb_uart.kicad_pcb` | `F.Cu` and `B.Cu` only, 1.6 mm thick, a GND pour on both. No inner copper |

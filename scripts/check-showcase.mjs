@@ -28,7 +28,7 @@ for (const b of boards) {
     if (!text(b[k])) fail(`${where}: "${k}" is empty`);
   }
   if (!text(b.reviewedBy)) fail(`${where}: "reviewedBy" is empty`);
-  if (!Array.isArray(b.layers) || ![2, 4].includes(b.layers.length)) fail(`${where}: expected 2 or 4 copper layers`);
+  if (!Array.isArray(b.layers) || b.layers.length < 1) fail(`${where}: expected at least one copper layer`);
   for (const l of b.layers ?? []) {
     for (const k of ["id", "label", "file", "alt", "note"]) if (!text(l[k])) fail(`${where}: layer "${l.id}" has an empty "${k}"`);
   }
@@ -38,6 +38,11 @@ for (const b of boards) {
   if (!text(b.prompt?.summary) || !text(b.prompt?.note)) fail(`${where}: prompt summary/note missing`);
 
   const dir = join(root, "public/showcase", b.slug);
+  const sourceText = read(join(dir, b.source?.file ?? "\0")) ?? "";
+  const declaredLayers = Number(sourceText.match(/^\s*layers\s+(\d+)\b/m)?.[1]);
+  if (Number.isInteger(declaredLayers) && declaredLayers !== (b.layers ?? []).length) {
+    fail(`${where}: ${b.layers?.length ?? 0} layer entries but the source declares ${declaredLayers} copper layers`);
+  }
   const need = [b.assets?.glb, b.assets?.render, b.assets?.schematic, ...(b.layers ?? []).map((l) => l.file), ...(b.files ?? []).map((f) => f.path)];
   for (const f of need) {
     if (!text(f) || !existsSync(join(dir, f))) fail(`${where}: file missing under public/showcase/${b.slug}/: ${f}`);

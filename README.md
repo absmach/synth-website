@@ -77,32 +77,11 @@ Earlier competitive research considered [Synth](https://www.absmach.eu/synth/),
 The site does not claim that open-source circuit compilers or AI review are
 exclusive to Synth.
 
-## Showcase
-
-The homepage Showcase section and the pages under `/showcase/<slug>/` come from
-`src/data/showcase.ts`. Each board has a card on the homepage and a page with a
-three.js viewer, the schematic and the four copper layers, the prompt, model and MCP
-tools, the checks and limits, and links to the source and KiCad files.
-
-To add a board:
-
-1. Put its files in `public/showcase/<slug>/`: a GLB (`kicad-cli pcb export glb
-   --subst-models --include-tracks --include-pads --include-zones
-   --include-soldermask`), a 3D render
-   PNG, schematic and one SVG per copper layer, the `.synth` source, the KiCad project
-   files and `brief.txt`.
-2. Add an entry to `src/data/showcase.ts`. Every number on the page must come
-   from a file or a measured run, and `limits` must state what is not verified.
-3. Run `pnpm build && pnpm check:showcase`. The check fails if a listed file is
-   missing, a required field is empty, a page section is missing, or the
-   homepage card does not link to the board.
-
 ## Verification
 
 ```bash
 pnpm check
 pnpm build
-pnpm check:showcase
 ```
 
 With dependencies already installed, `npm run dev`, `npm run check`, and

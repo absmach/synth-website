@@ -25,12 +25,11 @@ export interface Board {
 }
 
 const reviewedBy = "Steve Munene";
-// One revision for every published artifact: absmach/synth#103, qualification/class-b/usb-uart/.
-const REVISION = "7a0f3b3";
-// absmach/synth main as merged into that revision.
-const MAIN_REVISION = "1eac8a1";
-// The Synth main the routing and release reports were produced with, as QUALIFICATION.md records it.
-const REPORT_BUILD_REVISION = "1eac8a1";
+// One revision for every published artifact: absmach/synth#103 as merged into main, qualification/class-b/usb-uart/.
+const REVISION = "de3613e";
+// The Synth commit the routing and release reports were produced with (`source_revision` in reports/release.json).
+const MAIN_REVISION = "e6455e1";
+const REPORT_BUILD_REVISION = "e6455e1";
 
 export const boards: Board[] = [
   {
@@ -51,19 +50,19 @@ export const boards: Board[] = [
     reportBuildRevision: REPORT_BUILD_REVISION,
     reviewedBy,
     summary:
-      "Port 1 is TTL serial for debugging microcontroller boards: console, flashing, logs. Port 2 is RS-485 for industrial gear such as Modbus sensors, meters and motor drives, and its direction switches by itself from the bridge's DTR0/TNOW0 pin. Power comes from USB, and a jumper picks 3.3 V or 5 V I/O. Protection is on the USB side: a PRTR5V0U2X ESD array on D+ and D-, and PTVS6V0S1UR TVS diodes on VBUS, CC1 and CC2. The RS-485 pair has no external TVS or common-mode choke, and the 120 Ω termination is always in circuit.",
+      "Port 1 is TTL serial for debugging microcontroller boards: console, flashing, logs. Port 2 is RS-485 for industrial gear such as Modbus sensors, meters and motor drives, and its direction switches by itself from the bridge's DTR0/TNOW0 pin. Power comes from USB, and a jumper picks 3.3 V or 5 V I/O. Protection is on the USB side: a PRTR5V0U2X ESD array on D+ and D-, and PTVS6V0S1UR TVS diodes on VBUS, CC1 and CC2. The RS-485 pair has no external TVS or common-mode choke, and the 120 Ω termination is always in circuit. The two TX LEDs take their current from VIO and sink it into the TX lines, so they are dark while a line idles.",
     renderAlt:
       "Ray-traced 3D view of a small green circuit board with a USB-C receptacle at the top edge, a QFN chip in the middle, an RS-485 chip on the right, four mounting holes and four pin headers along the bottom edge",
     stats: [
-      { label: "Overall size", value: "41.5 × 32.23 mm" },
+      { label: "Overall size", value: "40.99 × 32.23 mm" },
       { label: "Layers", value: "2" },
       { label: "Nets routed", value: "26 of 26" },
-      { label: "KiCad DRC", value: "0 errors, 0 unconnected" },
+      { label: "KiCad DRC", value: "0 errors, 0 warnings" },
     ],
     prompt: {
       summary:
         "A real USB-C to dual-UART and RS-485 adapter, with USB ESD and TVS protection, where every claim must be true and measured.",
-      note: "There is no single prompt: the board came from a long chat plus agent briefs. The prompt below is a cleaned, self-contained version of that brief, with our local setup removed, so you can run it yourself. It is not the exact text we ran, and it describes the published board (revision A). A different run will not give an identical board.",
+      note: "There is no single prompt: the board came from a long chat plus agent briefs. The prompt below is a cleaned, self-contained version of that brief, with our local setup removed, so you can run it yourself. It is not the exact text we ran, and it describes the published board (the merged absmach/synth#103). A different run will not give an identical board.",
     },
     model: "Claude Sonnet 5.5 (claude-sonnet-5-5), run in Claude Code",
     tools: [
@@ -81,33 +80,34 @@ export const boards: Board[] = [
       { ref: "J1", name: "USB-C receptacle", role: "HRO TYPE-C-31-M-12: power and data in. KiCad's 3D model is not installed, so the viewer shows only its outline" },
       { ref: "H1 to H4", name: "M2.5 mounting holes", role: "Four 2.5 mm holes, two in the top corners and two at the sides" },
       { ref: "J_VIO", name: "3-pin jumper", role: "Picks 3.3 V or 5 V for the serial I/O" },
+      { ref: "D3 D4 D7", name: "Lite-On LTST-C190 LEDs", role: "Green on VIO; red TX LEDs on TXD0 and TXD1, fed from VIO, so they are dark while a line idles" },
       { ref: "J2 J3 J4", name: "3-pin headers", role: "TTL serial, flow control and the RS-485 bus" },
     ],
     checks: [
       { label: "Routing", value: "26 nets connected, 0 open" },
-      { label: "KiCad design-rule check", value: "0 errors, 0 unconnected, 39 warnings (36 footprint library links, 2 silkscreen-over-copper, 1 silkscreen overlap), run with the project's custom rules (copper to a board edge 0.3 mm, to a hole or an NPTH hole 0.2 mm, from the JLCPCB profile). The raw report also lists one F.Cu GND zone against itself as an unconnected item; no two objects are missing a connection. Report: reports/usb_uart.drc.json" },
-      { label: "Schematic ERC", value: "1 error (VIO power pin not driven, jumper-selected rail), 119 warnings (81 symbol-library link issues, 36 footprint links, 1 label on multiple wires, 1 net with multiple names). Report: reports/usb_uart.erc.json" },
+      { label: "KiCad design-rule check", value: "0 errors, 0 warnings, 0 unconnected items, from `kicad-cli pcb drc --severity-all --refill-zones` with the project's custom rules (copper to a board edge 0.3 mm, to a hole or an NPTH hole 0.2 mm, from the JLCPCB profile). The ground pour is one connected cluster. Report: reports/usb_uart.drc.json" },
+      { label: "Schematic ERC", value: "0 errors, 1 warning (a MODEM_IDLE label on more than one wire of the same net), run with the KiCad libraries installed. Report: reports/usb_uart.erc.json" },
       { label: "Release gate", value: "Passed: release_ready and fabrication_ready are true in Synth's records. That means Synth's own checks passed (routed, 0 open nets, KiCad DRC clean). It is not a manufacturing sign-off: nothing was fabricated or tested, and the fabrication note below applies. Records: reports/usb_uart.routing.json, reports/release.json" },
-      { label: "Fabrication note", value: "One via-in-pad: the U1 exposed-pad ground via at (23.8, 17.2) mm needs filled and capped vias at the fab. Not confirmed with JLCPCB for this board." },
-      { label: "Copper", value: "271 track segments, 38 vias, 507.7 mm. 241 segments on F.Cu and 30 on B.Cu; every via is a through via between the two copper layers." },
-      { label: "Signal integrity", value: "15 warnings, none blocking: every one is a layer change with no ground return via within 1.53 mm, so the return current has to jump between the F.Cu and B.Cu pours. Nobody has judged them." },
-      { label: "Time to route", value: "148 s, from the route record. J3 at its earlier x 25.56 mm left DTR1 open on two layers; the committed placement moves J3 and J4 1.44 mm right. The result is not bit-for-bit repeatable." },
+      { label: "Fabrication note", value: "One via-in-pad: the U1 exposed-pad ground via at (23.8, 17.3) mm needs filled and capped vias at the fab. Not confirmed with JLCPCB for this board." },
+      { label: "Copper", value: "273 track segments, 43 vias, 515.4 mm. 213 segments on F.Cu and 60 on B.Cu; every via is a through via between the two copper layers." },
+      { label: "Signal integrity", value: "23 warnings, none blocking: every one is a layer change with no ground return via within 1.53 mm, so the return current has to jump between the F.Cu and B.Cu pours. None is on the USB pair, which stays on F.Cu with no via. Nobody has judged them." },
+      { label: "Time to route", value: "211 s, from the route record. The router is sensitive to placement: J3 at x 27.0 mm and J4 at x 36.1 mm split the ground pour and left DTR1 unrouted, and 0.5 mm shifts left other nets open. Three exports of the committed inputs gave a byte-identical board on one machine; another machine or FreeRouting version was not tried." },
       { label: "Router", value: "FreeRouting 2.4.1. Record: reports/usb_uart.routing.json" },
-      { label: "Published files", value: `Board, schematic, source and layout files are byte-identical to absmach/synth#103 at commit ${REVISION} (qualification/class-b/usb-uart/). The 3D model, copper-layer SVGs, schematic SVG and the renders are made from that board by KiCad 10.0.7 with the ground pours refilled.` },
-      { label: "Synth build", value: `The routing and release reports were produced on Synth main ${REPORT_BUILD_REVISION} plus the export changes in PR #103 at ${REVISION}.` },
+      { label: "Published files", value: `Board, schematic, source, layout and report files are byte-identical to absmach/synth#103 as merged, commit ${REVISION} (qualification/class-b/usb-uart/). The 3D model, copper-layer SVGs, schematic SVG and the render are made from that board by KiCad 10.0.7 with the ground pours refilled.` },
+      { label: "Synth build", value: `The routing and release reports were produced on Synth ${REPORT_BUILD_REVISION}, the source_revision recorded in reports/release.json.` },
     ],
     limits: [
       `Engineering draft, not a completed Class-B qualification. Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}; no signal-integrity, power-integrity or RF expert has signed it off.`,
       "Two copper layers and no declared stackup: the exporter writes the 1.6 mm default. There is no inner reference plane, so a return current under an outer-layer track has to use the F.Cu or B.Cu ground pour.",
-      "The USB pair is not impedance-controlled. A 90 Ω differential pair needs about 1.18 mm traces at 1.6 mm on two layers, so no impedance target is declared. FreeRouting does not couple the pair, and its length and skew were not measured.",
-      "The signal-integrity pass reports 15 layer changes with no ground return via within 1.53 mm (CC2, MODEM_IDLE, CTS1, RXD0, +3V3, RXD1, RXD1_MCU, DTR1, LED_TX1 and VBUS). Nobody has judged them.",
+      "The USB pair is not impedance-controlled or coupled. A 90 Ω differential pair needs about 1.18 mm traces at 1.6 mm on two layers, so no impedance target is declared. Measured by the author on the committed board: both lines are on F.Cu with no via, 38.63 mm (D+) and 13.52 mm (D-), 25.11 mm of skew (about 0.2 percent of a 12 Mb/s bit), 91.4 percent of the length over solid B.Cu ground fill. Not an independent review.",
+      "The signal-integrity pass reports 23 layer changes with no ground return via within 1.53 mm (V3, LED_TX1, RXD0, +3V3, CTS0_LOW, RXD1, TNOW0, MODEM_IDLE, DTR1 and VBUS). None is on the USB pair. Nobody has judged them.",
       "FreeRouting's escape analysis flags J1 and U1 (0.5 mm pitch): neither a minimum via nor a minimum track fits between adjacent pads, and it suggests 4 layers. The route completes, with the only via-in-pad at U1 pin 25.",
-      "R_TERM (120 Ω 1 %) is permanently across A and B; the registry has no 2-pin header for a jumper. Every node on the bus is terminated whether or not it is the end node.",
-      "The RS-485 pair has no external TVS and no common-mode choke. Only the THVD1450's on-chip ±18 kV IEC contact ESD protects the bus; TI's 1 kV surge circuit is not built and the bus is not surge-tested.",
-      "The U1 exposed-pad via needs filled and capped vias. JLCPCB has not been asked about this board, and on two layers the filled-via option was not priced.",
+      "R_TERM (120 Ω 1 %) is permanently across A and B; the registry part for a 2-pin jumper (header_1x2) is not on this board. Every node on the bus is terminated whether or not it is the end node. Intended use is bench or lab, short cables, point-to-point or the last node on a bus.",
+      "The RS-485 pair has no external TVS and no common-mode choke. Only the THVD1450's on-chip ±18 kV IEC contact ESD protects the bus; TI's 1 kV surge circuit is not built and the bus is not surge-tested. A surge TVS, series resistors and a selectable termination are left for a later revision.",
+      "The U1 exposed-pad via needs filled and capped vias. JLCPCB has not been asked about this via. Its quote flow accepted the previous revision of the board on 2026-10-27 and the Gerbers were regenerated for this one, but the quote, BOM matching and DFM findings were not redone.",
       "No VBUS bulk capacitor, fuse, or reverse and inrush protection.",
-      "The J1 connector datasheet was not read. The Lite-On LED numbers are second-hand. The CH342F exposed pad is 2.6 mm in the KiCad footprint and 2.4 mm in the supplier drawing. Part availability, JLCPCB assembly and the registry LCSC numbers were not checked.",
-      "Header labels (GND, TXD1, RXD1 and so on) exist only in the schematic: Synth has no silkscreen text.",
+      "J1 courtyard to the top board edge is 0.01 mm: the shell face sits 0.50 mm inside Edge.Cuts, and the enclosure cutout fit is not checked. The J1 connector datasheet was not read. The Lite-On LED numbers are second-hand. The CH342F exposed pad is 2.6 mm in the KiCad footprint and 2.4 mm in the supplier drawing. Part availability, JLCPCB assembly and the registry LCSC numbers were not checked.",
+      "Header pin labels (GND, TXD1, RXD1 and so on) exist only in the schematic: Synth has no silkscreen text for them. Only the reference labels D7, J4, J_VIO and U1 are placed by hand in the sidecar.",
     ],
     source: { file: "usb_uart.synth" },
     schematicAlt:
@@ -118,14 +118,14 @@ export const boards: Board[] = [
         label: "Top",
         file: "layer-top.svg",
         alt: "Top copper layer with silkscreen: tracks and pads around the USB-C connector, the CH342F bridge and the RS-485 chip, over a ground pour",
-        note: "Top copper (F.Cu) with silkscreen. 241 track segments and a ground pour.",
+        note: "Top copper (F.Cu) with silkscreen. 213 track segments and a ground pour.",
       },
       {
         id: "bottom",
         label: "Bottom",
         file: "layer-bottom.svg",
         alt: "Bottom copper layer seen from below: a few tracks and a ground pour, with the through-hole header pads",
-        note: "Bottom copper (B.Cu), seen from below, so it is mirrored. 30 track segments and a ground pour.",
+        note: "Bottom copper (B.Cu), seen from below, so it is mirrored. 60 track segments and a ground pour.",
       },
     ],
     assets: {

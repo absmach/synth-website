@@ -32,7 +32,7 @@ One USB-C cable gives a computer two serial ports.
 - Nexperia PTVS6V0S1UR, 400 W TVS diodes on VBUS, CC1 and CC2, close to the connector.
 - TI LP5907-3.3 LDO (SOT-23-5): 2.2 µF in and out, EN tied to VIN. It makes +3V3 for the jumper.
 - USB-C receptacle `usb_c_receptacle` (HRO TYPE-C-31-M-12, a stock KiCad footprint), flush with the top board edge and centred along it. Four M2.5 mounting holes: two in the top corners and two halfway down the sides, each clear of every other courtyard. Connect all its VBUS pins to VBUS, and its ground and shield pins to GND. CC1 and CC2 each get 5.1 kΩ to GND so a USB-C host supplies 5 V. Both the A-side and B-side D+ and D- pins are tied together (the plug works either way round) and go straight to the bridge with no series resistor. Give them a netclass with 0.242 mm trace width and 0.127 mm clearance. Do not declare a 90 Ω impedance target: on two layers at 1.6 mm it is not reachable, and the pair will not be coupled by the router. Say so in the README.
-- LEDs (Lite-On LTST-C190 series, 0603): green on VIO, red on TXD0 and TXD1, each with 470 Ω from VIO into the LED, with the LED's cathode on the TX line, so it lights only while data goes out.
+- LEDs (Lite-On LTST-C190 series, 0603): green on VIO, red on TXD0 and TXD1, each with 470 Ω from VIO into the LED, with the LED's cathode on the TX line. The red LEDs sink their current into the TX pin, so they are dark while a line idles and lit on the low bits.
 - Headers J2, J3, J4 and J_VIO are 1 x 3, 2.54 mm pitch, through-hole.
 - All resistors and capacitors are 0603. Capacitors are X7R, 16 V.
 - 100 nF decoupling on the bridge's VDD5, V3 and VIO pins. Place each within 1 to 2 mm of its pin.
@@ -43,7 +43,7 @@ Two decisions already made, with the reason:
 1. **No 1.8 V or target-powered mode.** The THVD1450 needs at least 3 V, and it is powered from VIO. So when VIO is powered it is always 3.3 V or 5 V, chosen only by the jumper; with no jumper it is off.
 2. **UART0 is not broken out as TTL.** It only drives the RS-485 transceiver. Do not add a TTL header for it.
 
-Board: **2 layers**, manufacturer profile JLCPCB, no declared stackup (the exporter writes the 1.6 mm default). Put the USB-C on the top edge and the four headers (J2, J3, J4, J_VIO) on the bottom edge in one row. Compact placement: aim for roughly 41.5 x 32.3 mm.
+Board: **2 layers**, manufacturer profile JLCPCB, no declared stackup (the exporter writes the 1.6 mm default). Put the USB-C on the top edge and the four headers (J2, J3, J4, J_VIO) on the bottom edge in one row. Compact placement: aim for roughly 41 x 32.3 mm.
 
 ### Tasks, in order
 

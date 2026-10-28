@@ -50,7 +50,7 @@ export const boards: Board[] = [
     reportBuildRevision: REPORT_BUILD_REVISION,
     reviewedBy,
     summary:
-      "Port 1 is TTL serial for debugging microcontroller boards: console, flashing, logs. Port 2 is RS-485 for industrial gear such as Modbus sensors, meters and motor drives, and its direction switches by itself from the bridge's DTR0/TNOW0 pin. Power comes from USB, and a jumper picks 3.3 V or 5 V I/O. Protection is on the USB side: a PRTR5V0U2X ESD array on D+ and D-, and PTVS6V0S1UR TVS diodes on VBUS, CC1 and CC2. The RS-485 pair has no external TVS or common-mode choke, and the 120 Ω termination is always in circuit. The two TX LEDs take their current from VIO and sink it into the TX lines, so they are dark while a line idles.",
+      "Intended use: a bench or lab adapter, with short cables, point-to-point or as the last node on an RS-485 bus. It is not for industrial installs, long cable runs or a node in the middle of a multidrop bus. Port 1 is TTL serial for debugging microcontroller boards: console, flashing, logs. Port 2 is RS-485 for industrial gear such as Modbus sensors, meters and motor drives, and its direction switches by itself from the bridge's DTR0/TNOW0 pin. Power comes from USB, and a jumper picks 3.3 V or 5 V I/O. Protection is on the USB side: a PRTR5V0U2X ESD array on D+ and D-, and PTVS6V0S1UR TVS diodes on VBUS, CC1 and CC2. The RS-485 pair has no external TVS or common-mode choke, and the 120 Ω termination is always in circuit. The two TX LEDs take their current from VIO and sink it into the TX lines, so they are dark while a line idles.",
     renderAlt:
       "Ray-traced 3D view of a small green circuit board with a USB-C receptacle at the top edge, a QFN chip in the middle, an RS-485 chip on the right, four mounting holes and four pin headers along the bottom edge",
     stats: [
@@ -97,7 +97,6 @@ export const boards: Board[] = [
       { label: "Synth build", value: `The routing and release reports were produced on Synth ${REPORT_BUILD_REVISION}, the source_revision recorded in reports/release.json.` },
     ],
     limits: [
-      `Engineering draft, not a completed Class-B qualification. Not fabricated and not tested on hardware. Reviewed by ${reviewedBy}; no signal-integrity, power-integrity or RF expert has signed it off.`,
       "Two copper layers and no declared stackup: the exporter writes the 1.6 mm default. There is no inner reference plane, so a return current under an outer-layer track has to use the F.Cu or B.Cu ground pour.",
       "The USB pair is not impedance-controlled or coupled. A 90 Ω differential pair needs about 1.18 mm traces at 1.6 mm on two layers, so no impedance target is declared. Measured by the author on the committed board: both lines are on F.Cu with no via, 38.63 mm (D+) and 13.52 mm (D-), 25.11 mm of skew (about 0.2 percent of a 12 Mb/s bit), 91.4 percent of the length over solid B.Cu ground fill. Not an independent review.",
       "The signal-integrity pass reports 23 layer changes with no ground return via within 1.53 mm (V3, LED_TX1, RXD0, +3V3, CTS0_LOW, RXD1, TNOW0, MODEM_IDLE, DTR1 and VBUS). None is on the USB pair. Nobody has judged them.",

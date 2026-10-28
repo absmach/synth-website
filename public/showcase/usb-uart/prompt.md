@@ -20,6 +20,8 @@ Rules: edit only the `.synth` source and its placement layout file, never the ge
 
 One USB-C cable gives a computer two serial ports.
 
+Intended use: a bench or lab adapter, with short cables, point-to-point or as the last node on an RS-485 bus. It is not for industrial installs, long cable runs or a node in the middle of a multidrop bus: A and B get no surge protection beyond the transceiver's built-in ESD, and the 120 Ω termination is always connected. Say so in the README.
+
 - **Port 1: TTL serial** for debugging microcontroller boards. It comes out on two 3-pin headers: J2 = GND, TXD1, RXD1 (pin 1 is GND), and J3 = DTR1, RTS1, CTS1. Put 1 kΩ in series with RXD1 and with CTS1.
 - **Port 2: RS-485** for industrial gear. A 3-pin header J4 = A, B, GND. Put a 120 Ω 1 % resistor across A and B. Its direction switches by itself, from the CH342F's DTR0/TNOW0 pin, with no software control. Put a 4.7 kΩ 1 % resistor from TNOW0 to GND to select the bridge's automatic half-duplex direction mode.
 - **Power** comes from USB. A 3-pin jumper J_VIO picks the serial I/O voltage: pin 1 = +3V3, pin 2 = VIO, pin 3 = VBUS. Jumper 1-2 gives 3.3 V, jumper 2-3 gives 5 V. With no jumper, VIO is unpowered; state in the README what the bridge does then, from its datasheet. Think through what a forgotten jumper does to the rest of the board, and say it in the README.

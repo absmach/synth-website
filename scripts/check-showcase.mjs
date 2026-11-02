@@ -62,7 +62,8 @@ for (const b of boards) {
     const plumbing = /\b(commit|worktree|co-authored|pull request|firecrawl|toolsearch|sub-?agents?|token budget)\b|\bPR\b|\/home\/|\/tmp\/|\bgit\b/gi;
     const found = [...new Set(prompt.match(plumbing) ?? [])];
     if (found.length > 0) fail(`${where}: prompt.md has author-specific plumbing: ${found.join(", ")}`);
-    if (!/\bCH342F\b/.test(prompt) || !/\bTHVD1450\b/.test(prompt)) fail(`${where}: prompt.md does not name the key parts`);
+    if (!list(b.keyParts)) fail(`${where}: "keyParts" is empty`);
+    for (const part of b.keyParts ?? []) if (!prompt.includes(part)) fail(`${where}: prompt.md does not name ${part}`);
   }
 
   // The zip is built from everything in the board folder: it must contain all of it.
@@ -92,17 +93,24 @@ for (const b of boards) {
 
   // A page that says "not fabricated" must not ship a record that says fabrication-ready
   // unless the page itself explains what the field means.
-  const record = read(join(dir, "reports/usb_uart.routing.json"));
+  const routingFile = (b.files ?? []).map((f) => f.path).find((p) => p.endsWith(".routing.json"));
+  const record = routingFile ? read(join(dir, routingFile)) : null;
+  if (record === null) fail(`${where}: no routing report in files`);
   if (record !== null && /not fabricated/i.test(b.status) && JSON.parse(record).validation?.fabrication_ready !== false) {
     const gate = (b.checks ?? []).find((c) => c.label === "Release gate")?.value ?? "";
     if (!/fabrication_ready/.test(gate) || !/not a manufacturing sign-off/i.test(gate)) {
-      fail(`${where}: reports/usb_uart.routing.json says fabrication_ready, the page says the board is not fabricated, and the "Release gate" check does not explain that fabrication_ready is not a manufacturing sign-off`);
+      fail(`${where}: ${routingFile} says fabrication_ready, the page says the board is not fabricated, and the "Release gate" check does not explain that fabrication_ready is not a manufacturing sign-off`);
     }
   }
-  // The tool commit the reports came from is the one QUALIFICATION.md names, and every report it cites is published.
+  // The build the reports came from is the one the board declares, and every report QUALIFICATION.md cites is published.
   const qual = read(join(dir, "QUALIFICATION.md")) ?? "";
-  const qualTool = qual.match(/Synth `main` ([0-9a-f]{7})\b/)?.[1];
-  if (!qualTool || qualTool !== b.reportBuildRevision) fail(`${where}: reportBuildRevision ${b.reportBuildRevision} is not the Synth main commit QUALIFICATION.md names (${qualTool})`);
+  const release = read(join(dir, "reports/release.json"));
+  const reportRevision = record ? JSON.parse(record).provenance?.source_revision : null;
+  const releaseRevision = release ? JSON.parse(release).source_revision : null;
+  const publishedBuild = reportRevision ?? releaseRevision;
+  if (!publishedBuild || !publishedBuild.startsWith(b.reportBuildRevision ?? "\0")) {
+    fail(`${where}: reportBuildRevision ${b.reportBuildRevision} is not the source_revision in the routing or release report (${publishedBuild})`);
+  }
   for (const cited of new Set(qual.match(/reports\/[\w.-]+\.json/g) ?? [])) {
     if (!existsSync(join(dir, cited))) fail(`${where}: QUALIFICATION.md cites ${cited}, which is not published`);
   }
@@ -125,6 +133,7 @@ for (const b of boards) {
       if (!listed.has(f)) fail(`${where}: SHA256SUMS does not list ${f}`);
       else if (listed.get(f) !== createHash("sha256").update(readFileSync(join(dir, f))).digest("hex")) fail(`${where}: SHA256SUMS has the wrong hash for ${f}`);
     }
+    for (const f of listed.keys()) if (!existsSync(join(dir, f))) fail(`${where}: SHA256SUMS lists ${f}, which is not in the folder`);
   }
   // Protection wording must not imply tested surge protection.
   for (const [k, v] of [["summary", b.summary], ["prompt.summary", b.prompt?.summary ?? ""]]) {

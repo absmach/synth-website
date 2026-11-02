@@ -92,7 +92,8 @@ To add a board:
    PNG, schematic and one SVG per copper layer, the `.synth` source, the KiCad project
    files and, if you have one, the original brief as `brief.txt`.
 2. Add an entry to `src/data/showcase.ts`. Every number on the page must come
-   from a file or a measured run, and `limits` must state what is not verified.
+   from a file or a measured run, `limits` must state what is not verified, and
+   `keyParts` lists the parts the page's prompt must name.
 3. Run `pnpm build && pnpm check:showcase`. The check fails if a listed file is
    missing, a required field is empty, a page section is missing, or the
    homepage card does not link to the board.

@@ -36,39 +36,28 @@ Home, develop the board beside a persistent conversation, then open engineering
 details when needed. The visual language is white and cool gray, near-black
 text, a blue accent, and locally hosted DM Sans.
 
-- The homepage prompt carries an idea into the interactive concept. Example
-  suggestions fill the prompt; they do not start generation automatically.
+- The homepage sends visitors to the live Synth workspace. The public page
+  explains the workflow and uses verified board artifacts; it does not imitate
+  the application with a simulated builder.
 - Workspace tabs show the new Home, board with chat, perspective illustration,
   and optional Source view, using unmodified concept captures.
 - Source, Parts/BOM, Connections, physical settings, Checks, and Versions appear
   as optional depth. The compiler, MCP and KiCad foundations sit below the
   creation experience.
-- The live application, design concept, and open-source compiler have distinct
-  destinations. Enterprise support is a secondary contact path.
+- The live application and open-source compiler have distinct destinations.
+  Enterprise support is a secondary contact path.
 
-## Interactive concept
+## Retired preview route
 
-`public/preview/` contains the new concept’s runtime and assets. The native
-Astro entry at `src/pages/preview.astro` serves it at `/preview/`. Its generation and replies are simulated; prompts use a bundled
-example. Drawings are illustrative, and it does not create manufacturing files
-or call model, compiler, account, or supplier services. The real source and
-reference BOM are available for inspection.
-
-The homepage sends `?idea=` to the preview. A small bridge transfers up to 2,000
-characters into the Home prompt, removes the query parameter, and focuses the
-input without submitting it. Prototype projects remain in this browser under
-`synth-website-concept-projects-v1`; they do not sync to a live Synth account.
-
-The copied prototype retains its notices and export restrictions, includes a
-return link, and is marked `noindex, nofollow`. See
-`public/preview/PROVENANCE.txt` for its source revision, asset inventory, and
-website-specific changes. Font and source licenses are included alongside the
-assets. The previous cockpit recording is no longer promoted by the homepage.
+The old `/preview/` URL is retained only as a compatibility handoff to the
+live application. It no longer runs a simulated builder or stores browser-only
+prototype projects. The product page does not duplicate the application UI;
+the live app is the source of truth for creating and editing boards.
 
 Product claims are grounded in the sibling `synth` and `synth-ee` repositories.
-The new prototype changes product presentation; its compiler and production
-integration remain separate. No performance, autonomous-generation, or
-manufacturing-readiness claims are inferred from the prototype.
+The public site presents the product and verified artifacts; the live app owns
+the creation and production workflow. No performance, autonomous-generation,
+or manufacturing-readiness claims are inferred from screenshots or examples.
 
 Earlier competitive research considered [Synth](https://www.absmach.eu/synth/),
 [DeepPCB](https://deeppcb.ai/), [Quilter](https://www.quilter.ai/),

@@ -27,53 +27,6 @@ const details = [
   { icon: "⌁", title: "Physical settings", text: "Give the design its boundaries: board size, layers, placement requests, and routing preferences, all within reach." },
   { icon: "✓", title: "Checks & versions", text: "Inspect what has been checked, see what is still unknown, and return to an earlier snapshot as you explore." },
 ];
-const plans = [
-  {
-    id: "free",
-    name: "Free Beta",
-    price: "€0",
-    pricePeriod: "forever",
-    description: "A safe starting point for trying Synth.",
-    limits: [
-      "3 projects per workspace",
-      "5 synthesis jobs per hour",
-      "20 assistant runs per hour",
-      "10 manufacturing exports per hour",
-    ],
-    cta: "Start for free",
-    primary: true,
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: "Coming soon",
-    pricePeriod: null,
-    description: "More room for individual design work.",
-    limits: [
-      "25 projects per workspace",
-      "50 synthesis jobs per hour",
-      "250 assistant runs per hour",
-      "100 manufacturing exports per hour",
-    ],
-    cta: "Available soon",
-    primary: false,
-  },
-  {
-    id: "team",
-    name: "Team",
-    price: "Coming soon",
-    pricePeriod: null,
-    description: "Shared capacity for a small engineering team.",
-    limits: [
-      "250 projects per workspace",
-      "200 synthesis jobs per hour",
-      "1,000 assistant runs per hour",
-      "1,000 manufacturing exports per hour",
-    ],
-    cta: "Talk to us",
-    primary: false,
-  },
-];
 const faqs = [
   { question: "Do I need to write circuit code?", answer: "No. Describe your board in plain language and the assistant turns it into a design proposal you can inspect and refine. Open Source, Parts, or Checks when you want engineering depth. The open-source compiler and MCP tools are a separate path for engineers who prefer a local, code-based workflow." },
   { question: "What does the live app let me do?", answer: "Open Synth to create a board from a description, work on the design through the assistant, switch between Schematic, Board, and 3D views, review diagnostics in Checks, and export KiCad files for manufacturing. The interactive concept on this page lets you explore the experience without an account." },
@@ -81,7 +34,6 @@ const faqs = [
   { question: "Can I keep working in KiCad?", answer: "Yes. The Synth compiler exports native KiCad schematics, PCB layouts, project files, and a BOM. Keep changes in the .synth source if you want them preserved on regeneration." },
   { question: "What is open source?", answer: "The Community compiler, CLI, MCP tools, and component registry are available under Apache-2.0. Run them locally, connect your own compatible agent, and inspect or extend the implementation. The managed Synth application builds on that foundation." },
   { question: "When is a board ready to manufacture?", answer: "A board needs engineering review and passed checks on the exact design revision before fabrication. The Synth compiler produces structured diagnostics distinguishing passed, failed, and unavailable checks. Manufacturing export produces Gerbers and a BOM once the design is approved." },
-  { question: "How does the beta pricing work?", answer: "Synth is free during the beta. The Free plan gives you 3 projects, 5 synthesis jobs per hour, 20 assistant runs per hour, and 10 manufacturing exports per hour. Pro and Team plans are in planning and will unlock higher limits. Limits reset hourly." },
 ];
 ---
 <!doctype html>
@@ -89,21 +41,21 @@ const faqs = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Your next board starts with a conversation. Explore Synth’s new PCB creation experience: a prompt, a board canvas, and engineering tools when you need them." />
+    <meta name="description" content="Synth is conversational PCB design for embedded teams. Describe a board, inspect the design, review engineering checks, and continue in KiCad." />
     <meta name="theme-color" content="#fafbfe" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
     <link rel="preload" href={`${base}fonts/dm-sans.ttf`} as="font" type="font/ttf" crossorigin />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Synth — Your next board starts with a conversation." />
-    <meta property="og:description" content="Describe your idea. Explore the board beside your conversation. Go deeper whenever you need to." />
+    <meta property="og:title" content="Synth — Conversational PCB design for embedded teams." />
+    <meta property="og:description" content="Describe a board, inspect the design, review engineering checks, and continue in KiCad." />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImage} />
     <meta property="og:image:alt" content="The USB-C dual UART and RS-485 adapter board rendered in 3D" />
     <meta name="twitter:image" content={socialImage} />
     <meta name="twitter:image:alt" content="The USB-C dual UART and RS-485 adapter board rendered in 3D" />
     <meta name="twitter:card" content="summary_large_image" />
-    <title>Synth — Conversational PCB design</title>
+    <title>Synth — Conversational PCB design for embedded teams</title>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -113,9 +65,7 @@ const faqs = [
       links={[
         { href: "#showcase", label: "Showcase" },
         { href: "#workspace", label: "The experience" },
-        { href: "#details", label: "Go deeper" },
         { href: "#open-source", label: "Open source" },
-        { href: "#pricing", label: "Pricing" },
       ]}
     />
 
@@ -128,7 +78,7 @@ const faqs = [
           <form class="idea-box" action={previewUrl} method="get">
             <label class="sr-only" for="board-idea">Describe your board idea</label>
             <textarea id="board-idea" name="idea" rows="2" maxlength="2000" placeholder="A small USB-C board that measures the world around it…"></textarea>
-            <div class="idea-bottom"><span><span class="spark" aria-hidden="true">✧</span> A LITTLE IDEA. SOMETHING REAL.</span><button class="button button-primary" type="submit">Preview your idea <span aria-hidden="true">↗</span></button></div>
+            <div class="idea-bottom"><span><span class="spark" aria-hidden="true">✧</span> CONCEPT PREVIEW — NO ACCOUNT REQUIRED</span><button class="button button-primary" type="submit">See the workflow <span aria-hidden="true">↗</span></button></div>
           </form>
           <div class="idea-suggestions" aria-label="Example board ideas">
             {prompts.map(prompt => <button type="button" data-prompt={prompt.text}><span aria-hidden="true">+</span> {prompt.label}</button>)}
@@ -179,53 +129,32 @@ const faqs = [
             <article><span class="foundation-symbol" aria-hidden="true">↗</span><h3>A path into KiCad.</h3><p>The compiler exports native schematics, PCB layouts, and BOMs for inspection and downstream work.</p><a href={docsUrl}>Explore KiCad output <span aria-hidden="true">↗</span></a></article>
           </div>
           <div class="entry-grid">
-            <article class="entry-card workspace-entry"><span class="entry-label">THE LIVE APPLICATION</span><h3>Open Synth.</h3><p>Sign in to create boards from a description, work through the assistant, review checks, and export for manufacturing.</p><a class="button button-primary" href={appUrl}>Open the live app <span aria-hidden="true">↗</span></a><a class="entry-secondary" href={previewUrl}>Try the interactive concept first <span aria-hidden="true">↗</span></a></article>
+            <article class="entry-card workspace-entry"><span class="entry-label">THE LIVE APPLICATION</span><h3>Open Synth.</h3><p>Sign in to create boards from a description, work through the assistant, review checks, and export for manufacturing.</p><a class="button button-primary" href={appUrl}>Open the live app <span aria-hidden="true">↗</span></a></article>
             <article class="entry-card compiler-entry"><span class="entry-label">THE OPEN-SOURCE COMPILER</span><h3>Build your own workflow.</h3><p>Run the compiler locally, connect your own MCP-compatible agent, and work directly with circuit source. Apache-2.0.</p><a class="button button-outline" href={docsUrl}>Use the open compiler <span aria-hidden="true">↗</span></a><a class="entry-secondary" href={githubUrl}>Explore the source on GitHub <span aria-hidden="true">↗</span></a></article>
           </div>
           <div class="team-note"><p>Building with a team? <span>Talk to us about managed Synth and engineering support.</span></p><a href={contactUrl}>Let’s talk <span aria-hidden="true">↗</span></a></div>
         </div>
       </section>
 
-      <section id="pricing" class="pricing-section section-pad">
+      <section class="launch-section section-pad" aria-labelledby="launch-title">
         <div class="wrap">
           <div class="section-heading split-heading">
-            <div><p class="eyebrow">FREE DURING BETA. SIMPLE LIMITS.</p><h2>Start free.<br /><span>Scale when ready.</span></h2></div>
-            <p class="heading-aside">Synth is free to use during the beta. Limits reset hourly and apply per workspace. Pro and Team plans are in planning.</p>
+            <div><p class="eyebrow">A CLEAR PATH TO PRODUCTION</p><h2 id="launch-title">Start with intent.<br /><span>Finish with evidence.</span></h2></div>
+            <p class="heading-aside">Synth helps teams move from an idea to a reviewable electronics design. The managed app is the fastest way in; the open compiler keeps the work inspectable and portable.</p>
           </div>
-          <div class="plans-grid">
-            {plans.map(plan => (
-              <article class={`plan-card ${plan.primary ? "plan-card-primary" : ""}`}>
-                <div class="plan-header">
-                  <span class="plan-name">{plan.name}</span>
-                  {plan.primary && <span class="plan-badge">CURRENT</span>}
-                </div>
-                <div class="plan-price">
-                  <span class="plan-price-value">{plan.price}</span>
-                  {plan.pricePeriod && <span class="plan-price-period">/ {plan.pricePeriod}</span>}
-                </div>
-                <p class="plan-description">{plan.description}</p>
-                <ul class="plan-limits" role="list">
-                  {plan.limits.map(limit => <li>{limit}</li>)}
-                </ul>
-                <a
-                  class={`button ${plan.primary ? "button-primary" : "button-outline"} plan-cta`}
-                  href={plan.primary ? appUrl : contactUrl}
-                >
-                  {plan.cta} <span aria-hidden="true">↗</span>
-                </a>
-              </article>
-            ))}
+          <div class="entry-grid launch-path-grid">
+            <article class="entry-card workspace-entry"><span class="entry-label">BUILD IN THE MANAGED APP</span><h3>Turn a brief into a board.</h3><p>Describe the device, work beside the canvas, and keep the conversation attached to the design as it develops.</p><a class="button button-primary" href={appUrl}>Open Synth <span aria-hidden="true">↗</span></a></article>
+            <article class="entry-card compiler-entry"><span class="entry-label">KEEP THE ENGINEERING OPEN</span><h3>Inspect, export, continue.</h3><p>Review source and diagnostics, then take native KiCad files and a BOM into the tools your team already trusts.</p><a class="button button-outline" href={docsUrl}>Read the engineering docs <span aria-hidden="true">↗</span></a></article>
           </div>
-          <p class="pricing-note">Paid plans are shown for planning only. Limits reset hourly. <a href={contactUrl}>Contact us</a> about team needs.</p>
         </div>
       </section>
 
       <section class="faq-section section-pad wrap" aria-labelledby="faq-title"><div><p class="eyebrow">A FEW GOOD QUESTIONS</p><h2 id="faq-title">Curiosity.<br />Encouraged.</h2><a class="text-link" href={docsUrl}>Go deeper in the docs <span aria-hidden="true">↗</span></a></div><div class="faq-list">{faqs.map(faq => <details><summary>{faq.question}<span aria-hidden="true">+</span></summary><p>{faq.answer}</p></details>)}</div></section>
 
-      <section class="closing-section"><div class="closing-grid" aria-hidden="true"></div><div class="wrap closing-inner"><p class="eyebrow">FROM YOUR FIRST “WHAT IF”</p><h2>What will you<br /><span>build next?</span></h2><p>A little idea is a good place to start.</p><div class="closing-actions"><a class="button button-primary" href={appUrl}>Open Synth <span aria-hidden="true">↗</span></a><a class="text-link" href={previewUrl}>Try the interactive concept</a></div><span class="closing-spark" aria-hidden="true">✳</span></div></section>
+      <section class="closing-section"><div class="closing-grid" aria-hidden="true"></div><div class="wrap closing-inner"><p class="eyebrow">FROM YOUR FIRST “WHAT IF”</p><h2>What will you<br /><span>build next?</span></h2><p>A little idea is a good place to start.</p><div class="closing-actions"><a class="button button-primary" href={appUrl}>Open Synth <span aria-hidden="true">↗</span></a></div><span class="closing-spark" aria-hidden="true">✳</span></div></section>
     </main>
 
-    <footer class="site-footer"><div class="wrap footer-main"><div><a class="brand" href={base} aria-label="Synth home"><img src={`${base}images/synth-logo-monochrome.svg`} alt="Synth" width="114" height="27" /></a><p>A little idea. Something real.</p></div><div class="footer-links"><a href={appUrl}>Open Synth ↗</a><a href={previewUrl}>Interactive concept ↗</a><a href={githubUrl}>GitHub ↗</a><a href={docsUrl}>Documentation ↗</a><a href={contactUrl}>Get in touch ↗</a></div></div><div class="wrap footer-bottom"><span>© {new Date().getFullYear()} Synth. Built openly by <a href="https://www.absmach.eu/">Abstract Machines</a>.</span><div><a href="https://www.absmach.eu/privacy/">Privacy</a><span>Paris, France <span aria-hidden="true">↗</span></span></div></div></footer>
+    <footer class="site-footer"><div class="wrap footer-main"><div><a class="brand" href={base} aria-label="Synth home"><img src={`${base}images/synth-logo-monochrome.svg`} alt="Synth" width="114" height="27" /></a><p>A little idea. Something real.</p></div><div class="footer-links"><a href={appUrl}>Open Synth ↗</a><a href={githubUrl}>GitHub ↗</a><a href={docsUrl}>Documentation ↗</a><a href={contactUrl}>Get in touch ↗</a></div></div><div class="wrap footer-bottom"><span>© {new Date().getFullYear()} Synth. Built openly by <a href="https://www.absmach.eu/">Abstract Machines</a>.</span><div><a href="https://www.absmach.eu/privacy/">Privacy</a><span>Paris, France <span aria-hidden="true">↗</span></span></div></div></footer>
 
     <script>
       const tabs = [...document.querySelectorAll<HTMLButtonElement>(".view-tabs [role='tab']")];

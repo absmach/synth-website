@@ -12,7 +12,7 @@ Reviewed the current Synth website and authenticated Synth workspace on 4 Novemb
 | Qualification | Captures the idea plus lightweight context before email | Synth has the visitor's board brief but no durable request capture | Capture name, email, and board idea; do not ask for a long survey |
 | Confirmation | Dedicated, calm confirmation state with the submitted idea repeated | No request confirmation exists | Replace the form in place with a clear “request received” state and explain what happens next |
 | Operations | Listmonk-backed subscriber upsert, duplicate-safe behavior, honeypot, Turnstile, and optional thank-you email | No public beta-interest endpoint | Put validation, duplicate handling, rate limiting, and persistence in synth-ee; never expose mail credentials in the website |
-| Visual proof | Atomic uses current light product imagery and labels the preview honestly | Synth's embedded app images were dark captures from an older surface | Use the current light-mode Projects capture as the lead workspace view and label the screenshots as current product views |
+| Visual proof | Atomic uses current light product imagery and labels the preview honestly | Synth's embedded app images were dark captures from an older surface | Use a current RP2350 Edge Logger review-workspace capture as the lead view, with the populated board and status visible; keep the Projects capture available only as supporting product context |
 
 ## Scope for this change
 

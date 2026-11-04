@@ -13,7 +13,7 @@ const contactUrl = "https://www.absmach.eu/contact/";
 const canonicalUrl = Astro.site ?? Astro.url;
 const socialImage = new URL(`${base}images/og-usb-uart.jpg`, Astro.site);
 const views = [
-  { id: "home", label: "Start with an idea", image: "synth-live-home.png", alt: "Current light-mode Synth Projects page with the start-with-an-idea board brief form", title: "Start with the board in mind.", description: "Begin with a plain-language brief, then carry it into the full review workspace when you are ready." },
+  { id: "review", label: "Board review", image: "synth-live-rp2350.jpg", alt: "Current light-mode Synth RP2350 Edge Logger review workspace showing a populated PCB layout, revision status, and board checks", title: "Review a real board in context.", description: "Open a populated RP2350 Edge Logger workspace, inspect the layout, and see its revision and routing status before you build." },
   { id: "3d", label: "3D view", image: "synth-live-3d.png", alt: "Live Synth app in 3D view mode showing the rendered PCB with components, same conversation panel open", title: "Another view. The same conversation.", description: "Switch between Board, Schematic, and 3D. The conversation and your unfinished message stay close." },
   { id: "checks", label: "Review checks", image: "synth-live-checks.png", alt: "Live Synth app checks workspace showing DRC findings and routing status for the current design", title: "Know what passed. Know what's open.", description: "Structured diagnostics tell you what's clear, what needs attention, and what the assistant can help fix." },
 ];
@@ -94,9 +94,9 @@ const faqs = [
         <div class="showcase-heading"><div><span class="eyebrow">FROM IDEA TO ELECTRONICS</span><h2 id="workspace-title">A place to think. A place to build.</h2></div><a class="text-link" href={appUrl}>Open the live app <span aria-hidden="true">↗</span></a></div>
         <div class="workspace-showcase">
           <div class="showcase-toolbar"><div class="project-label"><span class="project-icon" aria-hidden="true">✧</span><span>demo-rp2350-edge-logger-001 <small>LIVE APP</small></span></div><div class="view-tabs" role="tablist" aria-label="Explore the Synth app">
-            {views.map(view => <button id={`tab-${view.id}`} role="tab" aria-selected={view.id === "home" ? "true" : "false"} aria-controls={`panel-${view.id}`} tabindex={view.id === "home" ? 0 : -1}>{view.label}</button>)}
+            {views.map(view => <button id={`tab-${view.id}`} role="tab" aria-selected={view.id === "review" ? "true" : "false"} aria-controls={`panel-${view.id}`} tabindex={view.id === "review" ? 0 : -1}>{view.label}</button>)}
           </div></div>
-          {views.map(view => <div id={`panel-${view.id}`} role="tabpanel" aria-labelledby={`tab-${view.id}`} tabindex="0" hidden={view.id !== "home"} class="view-panel"><img src={`${base}images/${view.image}`} alt={view.alt} width="1280" height="800" loading="lazy" /><div class="view-caption"><h3>{view.title}</h3><p>{view.description}</p></div></div>)}
+          {views.map(view => <div id={`panel-${view.id}`} role="tabpanel" aria-labelledby={`tab-${view.id}`} tabindex="0" hidden={view.id !== "review"} class="view-panel"><img src={`${base}images/${view.image}`} alt={view.alt} width="1280" height="960" loading="lazy" /><div class="view-caption"><h3>{view.title}</h3><p>{view.description}</p></div></div>)}
         </div>
         <div class="workspace-footnote"><p><span class="status-dot"></span> Screenshots from the live Synth application.</p><a href={appUrl}>Open Synth to build your own <span aria-hidden="true">↗</span></a></div>
         <div class="workflow-steps">

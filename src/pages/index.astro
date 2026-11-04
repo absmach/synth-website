@@ -14,8 +14,12 @@ const canonicalUrl = Astro.site ?? Astro.url;
 const socialImage = new URL(`${base}images/og-usb-uart.jpg`, Astro.site);
 const views = [
   { id: "review", label: "Board review", image: "synth-live-rp2350.jpg", alt: "Current light-mode Synth RP2350 Edge Logger review workspace showing a populated PCB layout, revision status, and board checks", title: "Review a real board in context.", description: "Open a populated RP2350 Edge Logger workspace, inspect the layout, and see its revision and routing status before you build." },
-  { id: "3d", label: "3D view", image: "synth-live-3d.png", alt: "Live Synth app in 3D view mode showing the rendered PCB with components, same conversation panel open", title: "Another view. The same conversation.", description: "Switch between Board, Schematic, and 3D. The conversation and your unfinished message stay close." },
+  { id: "parts", label: "Parts & BOM", image: "synth-live-parts.png", alt: "Synth Parts and BOM view showing component references, values, footprints, and a download BOM action", title: "See every part behind the board.", description: "Review the reference BOM, values, footprints, and quantities before you hand the design to manufacturing." },
+  { id: "component", label: "Component detail", image: "synth-live-component.png", alt: "Synth component inspector showing a BME680 environmental sensor registry entry, footprint, and pins", title: "Select a component. Follow its connections.", description: "Open a component from the board or BOM to inspect its registry metadata, footprint, pins, and ask Synth about it." },
+  { id: "schematic", label: "Schematic", image: "synth-live-schematic.png", alt: "Synth schematic view showing USB-C power, MCU, and BME680 sensor connections", title: "Trace the circuit, not just the picture.", description: "Move from placement to connectivity with a readable schematic view that keeps the design and conversation together." },
+  { id: "3d", label: "3D view", image: "synth-live-3d-light.png", alt: "Synth light-mode 3D view showing the rendered PCB, routed traces, components, and mounting holes", title: "See the board before it exists.", description: "Orbit the rendered board to catch enclosure, connector, clearance, and placement questions early." },
   { id: "checks", label: "Review checks", image: "synth-live-checks.png", alt: "Live Synth app checks workspace showing DRC findings and routing status for the current design", title: "Know what passed. Know what's open.", description: "Structured diagnostics tell you what's clear, what needs attention, and what the assistant can help fix." },
+  { id: "jlcpcb", label: "JLCPCB order", image: "synth-live-jlcpcb.png", alt: "Synth JLCPCB order view showing a revision-frozen quote, board details, BOM lines, and place order action", title: "From evidence to a manufacturing quote.", description: "Review the frozen revision, procurement snapshot, BOM pricing, and board cost before placing an assembly order." },
 ];
 const details = [
   { icon: "{ }", title: "Source", text: "Open the circuit source when you want to look closer. Edit a draft, import a .synth file, or take the source with you." },
@@ -98,7 +102,7 @@ const faqs = [
           </div></div>
           {views.map(view => <div id={`panel-${view.id}`} role="tabpanel" aria-labelledby={`tab-${view.id}`} tabindex="0" hidden={view.id !== "review"} class="view-panel"><img src={`${base}images/${view.image}`} alt={view.alt} width="1280" height="960" loading="lazy" /><div class="view-caption"><h3>{view.title}</h3><p>{view.description}</p></div></div>)}
         </div>
-        <div class="workspace-footnote"><p><span class="status-dot"></span> Screenshots from the live Synth application.</p><a href={appUrl}>Open Synth to build your own <span aria-hidden="true">↗</span></a></div>
+        <div class="workspace-footnote"><p><span class="status-dot"></span> Current Synth workspace surfaces, shown in light mode.</p><a href={appUrl}>Open Synth to build your own <span aria-hidden="true">↗</span></a></div>
         <div class="workflow-steps">
           <article><span>01 / DESCRIBE</span><h3>Start with what you imagine.</h3><p>A sensor board. A connected device. A first experiment. Put the idea into words and start from there.</p></article>
           <article><span>02 / DEVELOP</span><h3>Keep the conversation going.</h3><p>Ask questions, describe changes, and explore the board. The canvas and chat stay close together.</p></article>

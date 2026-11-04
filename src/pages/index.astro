@@ -203,7 +203,10 @@ const faqs = [
             const response = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
             const result = await response.json().catch(() => ({}));
             if (!response.ok) throw new Error(result.error || "We could not save your request.");
-            form.innerHTML = `<p class="beta-success-eyebrow">REQUEST RECEIVED</p><h3>Thanks. We have your note.</h3><p>We will review the board you described and email you if Synth is a good fit for the next beta group.</p><a class="button button-primary" href="${liveAppUrl}">Already have access? Open Synth <span aria-hidden="true">↗</span></a>`;
+            const deliveryNote = result.email === "delivery_unconfirmed"
+              ? "Your request is saved. We will follow up from the team when the beta is a good fit."
+              : "We will review the board you described and email you if Synth is a good fit for the next beta group.";
+            form.innerHTML = `<p class="beta-success-eyebrow">REQUEST RECEIVED</p><h3>Thanks. We have your note.</h3><p>${deliveryNote}</p><a class="button button-primary" href="${liveAppUrl}">Already have access? Open Synth <span aria-hidden="true">↗</span></a>`;
           } catch (error) {
             status.textContent = error instanceof Error ? error.message : "We could not save your request. Please try again.";
             if (button) button.disabled = false;

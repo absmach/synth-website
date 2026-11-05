@@ -171,6 +171,19 @@ const faqs = [
     <script>
       const liveAppUrl = "https://app.synth.absmach.eu/login";
       const tabs = [...document.querySelectorAll<HTMLButtonElement>(".view-tabs [role='tab']")];
+      const betaSection = document.getElementById("beta");
+      const betaLinks = [...document.querySelectorAll<HTMLAnchorElement>("a[href='#beta']")];
+      function revealBetaForm() {
+        if (!betaSection) return;
+        betaSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.setTimeout(() => document.querySelector<HTMLInputElement>("#beta-name")?.focus({ preventScroll: true }), 250);
+      }
+      betaLinks.forEach(link => link.addEventListener("click", event => {
+        event.preventDefault();
+        if (window.location.hash !== "#beta") history.pushState(null, "", "#beta");
+        revealBetaForm();
+      }));
+      if (window.location.hash === "#beta") window.setTimeout(revealBetaForm, 0);
       function activateTab(tab: HTMLButtonElement) {
         tabs.forEach(item => {
           const selected = item === tab;

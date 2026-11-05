@@ -1803,7 +1803,7 @@ h2 {
 
 /* A calm, explicit beta request surface. The product page explains the
    boundary; the app owns persistence and access decisions. */
-.beta-section{background:#f4f7fc;border-block:1px solid var(--line)}
+.beta-section{background:#f4f7fc;border-block:1px solid var(--line);scroll-margin-top:96px}
 .beta-layout{display:grid;grid-template-columns:minmax(0,.9fr) minmax(360px,.75fr);gap:clamp(42px,8vw,120px);align-items:start}
 .beta-copy h2{font-size:clamp(2.5rem,5vw,4.4rem);line-height:1.05;letter-spacing:-.055em;margin-top:17px}.beta-copy h2 span{color:var(--blue)}
 .beta-copy>p:not(.eyebrow){max-width:470px;color:var(--muted);font-size:16px;line-height:1.8;margin-top:24px}.beta-copy .beta-note{font-size:12px;line-height:1.7;color:#7a8493;margin-top:16px}.beta-copy .text-link{margin-top:27px}

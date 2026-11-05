@@ -1,11 +1,12 @@
 ---
 interface Props {
   docsUrl: string;
-  appUrl: string;
+  ctaHref: string;
+  ctaLabel: string;
   links: { href: string; label: string }[];
 }
 
-const { docsUrl, appUrl, links } = Astro.props;
+const { docsUrl, ctaHref, ctaLabel, links } = Astro.props;
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -16,7 +17,7 @@ const base = import.meta.env.BASE_URL;
       {links.map(({ href, label }) => <a href={href}>{label}</a>)}
       <a href={docsUrl}>Docs <span aria-hidden="true">↗</span></a>
     </nav>
-    <a class="button nav-cta" href={appUrl}>Open Synth <span aria-hidden="true">↗</span></a>
+    <a class="button nav-cta" href={ctaHref}>{ctaLabel} <span aria-hidden="true">→</span></a>
     <button class="menu-toggle" aria-label="Open navigation" aria-controls="primary-nav" aria-expanded="false"><span></span><span></span></button>
   </div>
 </header>

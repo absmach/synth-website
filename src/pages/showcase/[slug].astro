@@ -11,7 +11,7 @@ export function getStaticPaths() {
 
 const { board } = Astro.props as { board: Board };
 const base = import.meta.env.BASE_URL;
-const appUrl = "https://app.synth.absmach.eu/login";
+const betaAccessUrl = `${base}#beta`;
 const docsUrl = "https://www.absmach.eu/docs/synth/user-guide/quick-start/";
 const canonicalUrl = Astro.site ? new URL(`${base}showcase/${board.slug}/`, Astro.site) : Astro.url;
 const dir = `${base}showcase/${board.slug}/`;
@@ -56,7 +56,8 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
     <a class="skip-link" href="#main">Skip to content</a>
     <SiteHeader
       docsUrl={docsUrl}
-      appUrl={appUrl}
+      ctaHref={betaAccessUrl}
+      ctaLabel="Request beta access"
       links={[
         { href: `${base}#showcase`, label: "Showcase" },
         { href: `${base}#workspace`, label: "The experience" },
@@ -185,7 +186,7 @@ const facts = board.stats.map((s) => `${s.label} ${s.value}`).join(" · ");
       </section>
     </main>
 
-    <footer class="site-footer"><div class="wrap footer-main"><div><a class="brand" href={base} aria-label="Synth home"><img src={`${base}images/synth-logo-monochrome.svg`} alt="Synth" width="114" height="27" /></a><p>A little idea. Something real.</p></div><div class="footer-links"><a href={appUrl}>Open Synth ↗</a><a href="https://github.com/absmach/synth">GitHub ↗</a><a href={docsUrl}>Documentation ↗</a></div></div><div class="wrap footer-bottom"><span>© {new Date().getFullYear()} Synth. Built openly by <a href="https://www.absmach.eu/">Abstract Machines</a>.</span></div></footer>
+    <footer class="site-footer"><div class="wrap footer-main"><div><a class="brand" href={base} aria-label="Synth home"><img src={`${base}images/synth-logo-monochrome.svg`} alt="Synth" width="114" height="27" /></a><p>A little idea. Something real.</p></div><div class="footer-links"><a href={betaAccessUrl}>Request beta access →</a><a href="https://github.com/absmach/synth">GitHub ↗</a><a href={docsUrl}>Documentation ↗</a></div></div><div class="wrap footer-bottom"><span>© {new Date().getFullYear()} Synth. Built openly by <a href="https://www.absmach.eu/">Abstract Machines</a>.</span></div></footer>
 
     <dialog class="sc-lightbox" data-lightbox aria-label="Zoomed image">
       <div class="sc-lb-bar">
